@@ -50,12 +50,15 @@ public:
 
 	LithoModel() {}
 
+
 	void DoParse(std::string filePath);
+	
 
 	std::vector<LithoLayer> m_Layers;
 private:// stage function
 
-	int CheckFileType(std::string path);
+	int  CheckFileType(std::string path);
+	glm::vec2 PreviewStlModel();
 	void SliceModelToLithoLayers(SnowSlicer::SlicingParameter& parameter);
 	void ParseSVGToString();
 	void ProcessLayer(LithoLayer& layer);
@@ -70,6 +73,11 @@ private:// tool function
 private://data
 	std::string m_SVGPath;
 	LPerformance m_Performance;
+	SnowSlicer::Slicer   m_Slicer;
+
+	double m_zmin;
+	double m_zmax;
+	
 	
 	
 	

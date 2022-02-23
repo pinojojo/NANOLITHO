@@ -3,55 +3,70 @@
 
 namespace SnowSlicer
 {
-	Slicer::Slicer(SlicingParameter& para)
+	Slicer::Slicer()
 	{
-		m_Parameter = para;
+		
 	}
 	Slicer::~Slicer()
 	{
 	}
-	void Slicer::DoSlice()
+	void Slicer::SetParameter(SlicingParameter& para)
+	{
+		m_Parameter = para;
+	}
+	glm::vec2 Slicer::LoadFile()
 	{
 		// setting prameters
 		string model = m_Parameter.ModelPath;
-		char* rotate = (char*)string("false").c_str();
-		double eps = 0.004;
-		
+		string rotate_string = "false";
+		char* rotate = (char*)rotate_string.c_str();
+
+
 		// imoport stl files
-		TriangleMesh mesh;
 		switch (checkASCIIFile(model)) {
 		case 1:
-			if (StlToMeshInMemery(model, &mesh, false, rotate, eps) != 0)
+			if (StlToMeshInMemery(model, &m_Mesh, false, rotate, m_Eps) != 0)
 				return;
 			break;
 		case 0:
-			if (StlToMeshInMemery(model, &mesh, true, rotate, eps) != 0)
+			if (StlToMeshInMemery(model, &m_Mesh, true, rotate, m_Eps) != 0)
 				return;
 			break;
 		default:
 			cerr << "SnowSlicer: Unexpected error" << endl;
 			return;
 		}
+		m_Zmax = std::max(m_Mesh.getUpperRightVertex().z, m_Mesh.meshAABBSize().z);
+		m_Zmin = m_Mesh.getBottomLeftVertex().z;
 
-		// computing planes
-		float max_thickness = 2.0;
+		return glm::vec2(m_Zmin,m_Zmax);
+	}
+
+	void Slicer::SetThickness(float thickness)
+	{
+		m_Parameter.Thickness = thickness;
+	}
+	
+	void Slicer::DoSlice()
+	{
+		// 1. computing planes
+		float max_thickness = m_Parameter.Thickness;
 		float delta;
-		char* adaptive = (char*)string("false").c_str();
-		m_Planes = ComputePlanes(&mesh, max_thickness, adaptive, eps, &delta);
+		string adaptive_string = "false";
+		char* adaptive = (char*)adaptive_string.c_str();
+		m_Planes = ComputePlanes(&m_Mesh, max_thickness, adaptive, m_Eps, &delta);
 
-		std::cout <<"delta" << delta << std::endl;
-
-		// compute polygons
+		// 2. compute polygons
 		bool srt = false;
 		bool chaining = true;
 		bool orienting = true;
 		m_Polygons.resize(m_Planes.size());
-		IncrementalSlicing(&mesh, m_Planes, delta, srt, m_Polygons, chaining, orienting);
+		IncrementalSlicing(&m_Mesh, m_Planes, delta, srt, m_Polygons, chaining, orienting);
 
-		// save results
+		// 3. save results
 		if (m_Parameter.SaveToSVGFile)
 		{
-			export_svg_2d("sss.svg", m_Polygons, m_Planes.size(), mesh.meshAABBSize());
+			export_svg_2d("sss.svg", m_Polygons, m_Planes.size(), m_Mesh.meshAABBSize());
 		}
 		
 
@@ -150,6 +165,9 @@ namespace SnowSlicer
 
 		double model_zmin = mesh->getBottomLeftVertex().z;
 
+	
+
+
 		if (strcmp(adaptive, "false") == 0) { /*Uniform slicing: */
 
 			double spacing = (rounding ? xround(max_thickness, eps, 2, 0) : max_thickness); /*Plane spacing even multiple of {eps}*/
@@ -173,7 +191,7 @@ namespace SnowSlicer
 			*delta = (float)(spacing);
 		}
 		else { /*Adaptive slicing z-planes: */
-
+			std::cout << "adaptive mode" << std::endl;
 			float zplane = 0.0;
 			float min_thickness = 0.016;
 			Planes.push_back(model_zmin + zplane);

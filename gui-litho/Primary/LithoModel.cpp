@@ -13,8 +13,13 @@ void LithoModel::DoParse(std::string filePath)
     {
         SnowSlicer::SlicingParameter para;
         para.ModelPath = filePath;
-        SliceModelToLithoLayers(para);
-        cout << "parse stl finished in: " << m_Performance.GetDuration() << " ms." << endl;
+        PreviewStlModel();
+        
+        //SnowSlicer::SlicingParameter para;
+        //para.ModelPath = filePath;
+
+        //SliceModelToLithoLayers(para);
+        //cout << "parse stl finished in: " << m_Performance.GetDuration() << " ms." << endl;
         break;
        
     }
@@ -54,14 +59,16 @@ int LithoModel::CheckFileType(std::string path)
     return 0;
 }
 
+glm::vec2 LithoModel::PreviewStlModel()
+{
+    return m_Slicer.LoadFile();
+}
+
 void LithoModel::SliceModelToLithoLayers(SnowSlicer::SlicingParameter& parameter)
 {
-    SnowSlicer::Slicer slicer(parameter);
+    m_Slicer.DoSlice();
 
-    slicer.DoSlice();
-
-    ConvertToLithoLayer(slicer.m_Polygons);
-
+    ConvertToLithoLayer(m_Slicer.m_Polygons);
 
 }
 

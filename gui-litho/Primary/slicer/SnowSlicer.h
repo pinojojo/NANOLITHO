@@ -39,24 +39,24 @@ namespace SnowSlicer
 		int       NumLayers;
 		string    ModelPath;
 		bool	  SaveToSVGFile = true;
+		float     Thickness = 1.0;
 	};
 
 
 	class Slicer
 	{
 	public:// public function
-		Slicer(SlicingParameter& para);
+		Slicer();
 		~Slicer();
-
-		void PreviewModelInfo();
-		void ModifyParameter();
+		void SetParameter(SlicingParameter& para);
+		glm::vec2 LoadFile();
+		void SetThickness(float thickness);
 		void DoSlice();
-		
 		void ClearData();
 
 	private://stage funciton
 		
-		void ScaleModel();
+	
 		
 		int StlToMeshInMemery(string stlFile, TriangleMesh* mesh, bool isBinaryFormat, const char* rotate, double eps);
 
@@ -113,13 +113,16 @@ namespace SnowSlicer
 		void export_svg_2d(string fileName, vector<vector<contour>> polygons, int nplanes, const v3& aabbSize);
 
 	public:// data
-		
+		TriangleMesh m_Mesh;
 		vector<float> m_Planes;
 		vector<vector<contour>> m_Polygons;
 		
 
 	private:// global var
 		long intersections = 0;
+		double m_Zmin;
+		double m_Zmax;
+		double m_Eps = 0.004;
 		SlicingParameter m_Parameter;
 		
 
