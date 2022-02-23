@@ -79,7 +79,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         std::cout << "console opened" << std::endl;
 	}
 
-    lithoModel.DoParse("stl/test2.stl");
+    lithoModel.DoParse("stl/lamb.stl");
 
     std::cout << "loga" << lithoModel.m_Layers.size();
    
@@ -275,9 +275,28 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
                 // slicing parameter
                 ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 20);
                 ImGui::Separator();
-                std::string  selected_model_info = "currrent model zmin&zmax: ";
-                ImGui::Text(selected_model_info.c_str());
                
+               
+               
+                if (perserReady)
+                {
+                    auto minmax=lithoModel.GetMinMax();
+                    std::string  model_info_string = "currrent model zmin&zmax: "
+                        + std::to_string(minmax.x)
+                        + " "
+                        + std::to_string(minmax.y);
+                    ImGui::Text(model_info_string.c_str());
+
+                    
+                    float model_height = minmax.y - minmax.x;
+                    static float thickness = model_height / 100;
+                    if (ImGui::InputFloat("thickness", &thickness))
+                    {
+
+                    };
+
+                }
+
                 static int slicing_layers = 30;
                 ImGui::InputInt("slicing layers", &slicing_layers);
                 
@@ -456,6 +475,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
                 stlFileDialog.ClearSelected();
                 std::cout << "Selected filename" << stlPath << std::endl;
                 lithoModel.DoParse(stlPath);
+                
                 perserReady = true;
             }
 

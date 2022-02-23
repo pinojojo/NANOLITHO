@@ -23,21 +23,24 @@ namespace SnowSlicer
 
 
 		// imoport stl files
-		switch (checkASCIIFile(model)) {
+		TriangleMesh mesh_temp;
+		switch (checkASCIIFile(model)) 
+		{
 		case 1:
-			if (StlToMeshInMemery(model, &m_Mesh, false, rotate, m_Eps) != 0)
-				return;
-			break;
+			StlToMeshInMemery(model, &mesh_temp, false, rotate, m_Eps) != 0;
+		break;
 		case 0:
-			if (StlToMeshInMemery(model, &m_Mesh, true, rotate, m_Eps) != 0)
-				return;
-			break;
+			StlToMeshInMemery(model, &mesh_temp, true, rotate, m_Eps) != 0;
+		break;
 		default:
 			cerr << "SnowSlicer: Unexpected error" << endl;
-			return;
 		}
+		m_Mesh = mesh_temp;
+		
 		m_Zmax = std::max(m_Mesh.getUpperRightVertex().z, m_Mesh.meshAABBSize().z);
 		m_Zmin = m_Mesh.getBottomLeftVertex().z;
+
+	
 
 		return glm::vec2(m_Zmin,m_Zmax);
 	}
@@ -77,7 +80,7 @@ namespace SnowSlicer
 	}
 	int Slicer::StlToMeshInMemery(string stlFile, TriangleMesh* mesh, bool isBinaryFormat, const char* rotate, double eps)
 	{
-
+		
 		int ndegenerated = 0;
 
 		if (!isBinaryFormat) {

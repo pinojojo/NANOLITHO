@@ -263,6 +263,10 @@ namespace SnowSlicer{
 
 		v3 getUpperRightVertex() const { return upperRightVertex; }
 
+		void clear() {
+			vTriangle.clear();
+		}
+
 	public:
 
 		int meshSize;

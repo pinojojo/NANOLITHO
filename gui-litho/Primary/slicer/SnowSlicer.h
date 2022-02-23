@@ -116,14 +116,14 @@ namespace SnowSlicer
 		TriangleMesh m_Mesh;
 		vector<float> m_Planes;
 		vector<vector<contour>> m_Polygons;
-		
+		SlicingParameter m_Parameter;
 
 	private:// global var
 		long intersections = 0;
 		double m_Zmin;
 		double m_Zmax;
 		double m_Eps = 0.004;
-		SlicingParameter m_Parameter;
+		
 		
 
 	};
