@@ -42,6 +42,13 @@ namespace SnowSlicer
 		float     Thickness = 1.0;
 	};
 
+	struct ModelInfo 
+	{
+		glm::vec3 bottom_left_vertex;
+		glm::vec3 upper_right_vertex;
+		glm::vec3 aabb_size;
+	};
+
 
 	class Slicer
 	{
@@ -117,6 +124,7 @@ namespace SnowSlicer
 		vector<float> m_Planes;
 		vector<vector<contour>> m_Polygons;
 		SlicingParameter m_Parameter;
+		ModelInfo m_ModelInfo;
 
 	private:// global var
 		long intersections = 0;

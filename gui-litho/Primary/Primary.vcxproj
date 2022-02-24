@@ -160,7 +160,6 @@
     <ClCompile Include="LPerformance.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="slicer\SnowSlicer.cpp" />
-    <ClCompile Include="SlicingEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LithoModel.h" />
@@ -170,7 +169,6 @@
     <ClInclude Include="shader.h" />
     <ClInclude Include="slicer\DataType.h" />
     <ClInclude Include="slicer\SnowSlicer.h" />
-    <ClInclude Include="SlicingEngine.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\bin\shader\blend.frag" />

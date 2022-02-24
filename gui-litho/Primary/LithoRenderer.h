@@ -80,8 +80,8 @@ private:
 	float m_PixelSize = 0.15; // 
 
 
-	int m_WinWidth = 512;
-	int m_WinHeight = 512;
+	int m_WinWidth = 1000;
+	int m_WinHeight = 1000;
 	int m_AASamples = 16;
 
 	float m_CenterX = 0;

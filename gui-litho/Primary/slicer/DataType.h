@@ -251,6 +251,71 @@ namespace SnowSlicer{
 			}
 		}
 
+		void sclaing_to_spec(float specified) {
+			// find max size of xy dimension
+			float current_model_size = std::max(meshAABBSize().x, meshAABBSize().y);
+			float scaling_number = specified / current_model_size;
+
+			glm::mat4 convert_mat;
+			if (scaling_number>0)
+			{
+				// find scaling reference points
+				glm::vec3 referencer_point;
+				referencer_point.x = getBottomLeftVertex().x + meshAABBSize().x / 2.f;
+				referencer_point.y = getBottomLeftVertex().y + meshAABBSize().y / 2.f;
+				referencer_point.z = getBottomLeftVertex().z;
+
+				// adjust coord system's origin to reference point
+				glm::mat4 translate_mat = glm::translate(glm::mat4(1.f), -referencer_point);
+
+				// scaling
+				glm::mat4 scaling_mat = glm::scale(glm::mat4(1.f), glm::vec3(scaling_number));
+
+				convert_mat = scaling_mat * translate_mat;
+			}
+
+			// convert each point
+			for (auto& tri:vTriangle)
+			{
+				for (int pt_id = 0; pt_id < 3; pt_id++)
+				{
+					glm::vec4 original_point = glm::vec4(tri.v[pt_id].x, tri.v[pt_id].y, tri.v[pt_id].z, 1.0);
+					glm::vec4 converted_point = convert_mat * original_point;
+					tri.v[pt_id].x = converted_point.x / converted_point.w;
+					tri.v[pt_id].y = converted_point.y / converted_point.w;
+					tri.v[pt_id].z = converted_point.z / converted_point.w;
+
+					cout << "i: " << original_point.x << " " << original_point.y << " " << original_point.z << " " << original_point.w<<" => "
+						<< converted_point.x << " " << converted_point.y << " " << converted_point.z << " " << converted_point.w << endl;
+					
+				}
+			}
+
+			// re-calcultate aabb box
+			bottomLeftVertex.x = 999999;
+			bottomLeftVertex.y = 999999;
+			bottomLeftVertex.z = 999999;
+			upperRightVertex.x = -999999;
+			upperRightVertex.y = -999999;
+			upperRightVertex.z = -999999;
+
+			for (auto& tri : vTriangle)
+			{
+				for (int pt_id = 0; pt_id < 3; pt_id++)
+				{
+					if (tri.v[pt_id].x < bottomLeftVertex.x) { bottomLeftVertex.x = tri.v[pt_id].x; }
+					if (tri.v[pt_id].y < bottomLeftVertex.y) { bottomLeftVertex.y = tri.v[pt_id].y; }
+					if (tri.v[pt_id].z < bottomLeftVertex.z) { bottomLeftVertex.z = tri.v[pt_id].z; }
+					if (tri.v[pt_id].x > upperRightVertex.x) { upperRightVertex.x = tri.v[pt_id].x; }
+					if (tri.v[pt_id].y > upperRightVertex.y) { upperRightVertex.y = tri.v[pt_id].y; }
+					if (tri.v[pt_id].z > upperRightVertex.z) { upperRightVertex.z = tri.v[pt_id].z; }
+				}
+			}
+
+			cout << "scaling finished" << std::endl;
+		}
+
+
 		v3 meshAABBSize() const {
 			return v3(upperRightVertex.x - bottomLeftVertex.x,
 				upperRightVertex.y - bottomLeftVertex.y,

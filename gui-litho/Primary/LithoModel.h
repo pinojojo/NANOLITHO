@@ -52,19 +52,28 @@ public:
 
 	void DoParse(std::string filePath);
 
+	void Slicing();
+
 	// Getter
 	glm::vec2 GetMinMax();
-	
-	
-	
-	
+	void GetAABB(glm::vec2& AABB_x, glm::vec2& AABB_y);
 
+	// Setter
+	void SetThickness(float thickness);
+	void SetExpectedSize(float expected_size);
+	
+	
+	
+	
+	
+	
+	SnowSlicer::Slicer m_Slicer;
 	std::vector<LithoLayer> m_Layers;
 private:// stage function
 
 	int  CheckFileType(std::string path);
 	void LoadStl(std::string filePath);
-	void SliceModelToLithoLayers(SnowSlicer::SlicingParameter& parameter);
+	void SliceModelToLithoLayers();
 	void ParseSVGToString();
 	void ProcessLayer(LithoLayer& layer);
 	void ProcessLayerPolygons(LithoLayer& layer);// may take long time 
@@ -78,12 +87,17 @@ private:// tool function
 private://data
 	std::string m_SVGPath;
 	LPerformance m_Performance;
-	SnowSlicer::Slicer m_Slicer;
+	
 	SnowSlicer::SlicingParameter m_SlicerPara;
 	
+	float m_ExpectedSize = 1.0f;
 
-	double m_zmin;
-	double m_zmax;
+	double m_Zmin;
+	double m_Zmax;
+	double m_Xmin;
+	double m_Ymin;
+	double m_Xmax;
+	double m_Ymax;
 	
 	
 	

@@ -287,23 +287,74 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
                         + std::to_string(minmax.y);
                     ImGui::Text(model_info_string.c_str());
 
+                    std::string model_bottom_left;
+                    std::string model_upper_right;
+                    std::string model_size;
                     
+                    model_bottom_left = "bottom left point " 
+                        " x: " + std::to_string(lithoModel.m_Slicer.m_Mesh.getBottomLeftVertex().x) +
+                        " y: " + std::to_string(lithoModel.m_Slicer.m_Mesh.getBottomLeftVertex().y) +
+                        " z: " + std::to_string(lithoModel.m_Slicer.m_Mesh.getBottomLeftVertex().z);
+                    model_upper_right = "upper right point "
+                        " x: " + std::to_string(lithoModel.m_Slicer.m_Mesh.getUpperRightVertex().x) +
+                        " y: " + std::to_string(lithoModel.m_Slicer.m_Mesh.getUpperRightVertex().y) +
+                        " z: " + std::to_string(lithoModel.m_Slicer.m_Mesh.getUpperRightVertex().z);
+                    model_size        = "model size        "
+                        " x: " + std::to_string(lithoModel.m_Slicer.m_Mesh.meshAABBSize().x) +
+                        " y: " + std::to_string(lithoModel.m_Slicer.m_Mesh.meshAABBSize().y) +
+                        " z: " + std::to_string(lithoModel.m_Slicer.m_Mesh.meshAABBSize().z);
+
+
+                    ImGui::Text(model_bottom_left.c_str());
+                    ImGui::Text(model_upper_right.c_str());
+                    ImGui::Text(model_size.c_str());
+
+                    static float expected_size = 1.0f;
+                    if (ImGui::InputFloat("expected size", &expected_size))
+                    {
+                        lithoModel.SetExpectedSize(expected_size);
+                    }
+
                     float model_height = minmax.y - minmax.x;
-                    static float thickness = model_height / 100;
+                    static float thickness = 0;
                     if (ImGui::InputFloat("thickness", &thickness))
                     {
-
-                    };
+                        lithoModel.SetThickness(thickness);
+                    }
+                    if (ImGui::Button("Slicing"))
+                    {
+                        lithoModel.Slicing();
+                    }
 
                 }
 
-                static int slicing_layers = 30;
-                ImGui::InputInt("slicing layers", &slicing_layers);
-                
 
                 static float pixelSize = 0.008f;
-                ImGui::SliderFloat("pixel size", &pixelSize, 0.0001f, 0.3f, "pixel size = %.4f");
-                lithoRenderer.SetPixelSize(pixelSize);
+                if (ImGui::SliderFloat("pixel size", &pixelSize, 0.0001f, 0.3f, "pixel size = %.4f"))
+                {
+                    lithoRenderer.SetPixelSize(pixelSize);
+                }
+                
+
+                static int global_resolution = 1000000;
+                ImGui::InputInt("global resolution", &global_resolution);
+                if (ImGui::Button("Apply Sub Field View"))
+                {
+                    float original_size = std::max(lithoModel.m_Slicer.m_Mesh.meshAABBSize().x, lithoModel.m_Slicer.m_Mesh.meshAABBSize().y);
+                    float original_pixel_size = original_size * 1.0 / global_resolution;
+                    std::cout << "original pixel size " << original_pixel_size << std::endl;
+                    lithoRenderer.SetPixelSize(original_pixel_size);
+                    
+                    std::string str_curr_pixel_size = "current pixel size: "+std::to_string(original_pixel_size);
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("Apply Global Field View"))
+                {
+                    float original_size = std::max(lithoModel.m_Slicer.m_Mesh.meshAABBSize().x, lithoModel.m_Slicer.m_Mesh.meshAABBSize().y);
+                    lithoRenderer.SetPixelSize(original_size/1000.f);
+                }
+
+                
 
                
                
@@ -315,14 +366,14 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
                 if (ImGui::Button("scan forward", ImVec2(200, 30)))
                 {
-                    lithoRenderer.ShiftHorizontal(-10);
+                    lithoRenderer.ShiftHorizontal(-1);
                 }
                 
                 ImGui::SameLine();
 
                 if (ImGui::Button("scan backward", ImVec2(200, 30)))
                 {
-                    lithoRenderer.ShiftHorizontal(10);
+                    lithoRenderer.ShiftHorizontal(1);
                 }
                 ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 20);
 
@@ -415,7 +466,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
                             click_pos_y = io.MousePos.y;
                         }
                        
-                        bool isRenderWindowSelected = (curr_pos_x > 0)&&(curr_pos_x<500)&&(curr_pos_y<1000)&&(curr_pos_y>500);
+                        bool isRenderWindowSelected = (curr_pos_x > 0)&&(curr_pos_x<1000);
                         if (isRenderWindowSelected)
                         {
                             if (ImGui::IsMouseDown(0))
@@ -431,12 +482,12 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
                                 lithoRenderer.MoveByPixel(curr_shift_x, curr_shift_y, 1);
                             }
 
-                            pixelSize += io.MouseWheel*0.001;
+                            /*pixelSize += io.MouseWheel*0.001;
                             if (pixelSize<0)
                             {
                                 pixelSize = 0.000001;
                             }
-                            lithoRenderer.SetPixelSize(pixelSize);
+                            lithoRenderer.SetPixelSize(pixelSize);*/
 
                          
                             auto center = lithoRenderer.GetCenter();

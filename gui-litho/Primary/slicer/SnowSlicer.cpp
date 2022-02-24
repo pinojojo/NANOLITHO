@@ -40,8 +40,19 @@ namespace SnowSlicer
 		m_Zmax = std::max(m_Mesh.getUpperRightVertex().z, m_Mesh.meshAABBSize().z);
 		m_Zmin = m_Mesh.getBottomLeftVertex().z;
 
-	
+		
+		m_ModelInfo.bottom_left_vertex.x = m_Mesh.getBottomLeftVertex().x;
+		m_ModelInfo.bottom_left_vertex.y = m_Mesh.getBottomLeftVertex().y;
+		m_ModelInfo.bottom_left_vertex.z = m_Mesh.getBottomLeftVertex().z;
 
+		m_ModelInfo.upper_right_vertex.x = m_Mesh.getUpperRightVertex().x;
+		m_ModelInfo.upper_right_vertex.y = m_Mesh.getUpperRightVertex().y;
+		m_ModelInfo.upper_right_vertex.z = m_Mesh.getUpperRightVertex().z;
+
+		m_ModelInfo.aabb_size.x = m_Mesh.meshAABBSize().x;
+		m_ModelInfo.aabb_size.y = m_Mesh.meshAABBSize().y;
+		m_ModelInfo.aabb_size.z = m_Mesh.meshAABBSize().z;
+		
 		return glm::vec2(m_Zmin,m_Zmax);
 	}
 

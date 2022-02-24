@@ -60,9 +60,6 @@
     <ClCompile Include="csharp_interface.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="SlicingEngine.cpp">
-      <Filter>litho</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LithoRenderer.h">
@@ -85,9 +82,6 @@
     </ClInclude>
     <ClInclude Include="slicer\SnowSlicer.h">
       <Filter>slicer</Filter>
-    </ClInclude>
-    <ClInclude Include="SlicingEngine.h">
-      <Filter>litho</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

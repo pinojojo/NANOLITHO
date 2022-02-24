@@ -15,16 +15,8 @@ void LithoModel::DoParse(std::string filePath)
         break;
     case 1:
     {
-       
         LoadStl(filePath);
-        
-        //SnowSlicer::SlicingParameter para;
-        //para.ModelPath = filePath;
-
-        //SliceModelToLithoLayers(para);
-        //cout << "parse stl finished in: " << m_Performance.GetDuration() << " ms." << endl;
         break;
-       
     }
         
     case 2:
@@ -47,9 +39,24 @@ void LithoModel::DoParse(std::string filePath)
     
 }
 
+void LithoModel::Slicing()
+{
+    SliceModelToLithoLayers();
+}
+
 glm::vec2 LithoModel::GetMinMax()
 {
-    return glm::vec2(m_zmin,m_zmax);
+    return glm::vec2(m_Zmin,m_Zmax);
+}
+
+void LithoModel::SetThickness(float thickness)
+{
+    m_Slicer.m_Parameter.Thickness = thickness;
+}
+
+void LithoModel::SetExpectedSize(float expected_size)
+{
+    m_Slicer.m_Mesh.sclaing_to_spec(expected_size);
 }
 
 int LithoModel::CheckFileType(std::string path)
@@ -72,14 +79,14 @@ void LithoModel::LoadStl(std::string filePath)
 {
     m_Slicer.m_Parameter.ModelPath = filePath;
     auto dm = m_Slicer.LoadFile();
-    m_zmax = dm.y;
-    m_zmin = dm.x;
+    m_Zmax = dm.y;
+    m_Zmin = dm.x;
    
 }
 
 
 
-void LithoModel::SliceModelToLithoLayers(SnowSlicer::SlicingParameter& parameter)
+void LithoModel::SliceModelToLithoLayers()
 {
     m_Slicer.DoSlice();
 
