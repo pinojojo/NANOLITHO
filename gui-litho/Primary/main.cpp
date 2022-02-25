@@ -354,12 +354,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
                     lithoRenderer.SetPixelSize(original_size/1000.f);
                 }
 
-                
-
-               
-               
-
-
                 static float patternRot = 45.f;
                 ImGui::SliderFloat("infill pattern rotation", &patternRot, 0.f, 180.f, "rotation degree = %.1f");
                 lithoRenderer.SetPatternRotation(patternRot);
