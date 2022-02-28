@@ -155,20 +155,29 @@
     <ClCompile Include="..\inc\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\inc\imgui\imgui_widgets.cpp" />
     <ClCompile Include="csharp_interface.cpp" />
+    <ClCompile Include="InfillRenderer.cpp" />
+    <ClCompile Include="LithoDataGenerator.cpp" />
     <ClCompile Include="LithoModel.cpp" />
     <ClCompile Include="LithoRenderer.cpp" />
     <ClCompile Include="LPerformance.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MaskRenderer.cpp" />
     <ClCompile Include="slicer\SnowSlicer.cpp" />
+    <ClCompile Include="StrokeRenderer.cpp" />
+    <ClCompile Include="windowless_opengl.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="InfillRenderer.h" />
+    <ClInclude Include="LithoDataGenerator.h" />
     <ClInclude Include="LithoModel.h" />
     <ClInclude Include="LithoRenderer.h" />
     <ClInclude Include="LithoSlicer.h" />
     <ClInclude Include="LPerformance.h" />
+    <ClInclude Include="MaskRenderer.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="slicer\DataType.h" />
     <ClInclude Include="slicer\SnowSlicer.h" />
+    <ClInclude Include="StrokeRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\bin\shader\blend.frag" />

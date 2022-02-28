@@ -13,11 +13,14 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
+    <Filter Include="slicer">
+      <UniqueIdentifier>{32bd9769-3181-40e4-97ca-0d8be0985d5a}</UniqueIdentifier>
+    </Filter>
     <Filter Include="litho">
       <UniqueIdentifier>{d3448bd3-6379-4d1e-abb6-75523ecf5d7e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="slicer">
-      <UniqueIdentifier>{32bd9769-3181-40e4-97ca-0d8be0985d5a}</UniqueIdentifier>
+    <Filter Include="Renderer">
+      <UniqueIdentifier>{79da61ed-6411-4d08-9fab-91559265d575}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -60,6 +63,21 @@
     <ClCompile Include="csharp_interface.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="LithoDataGenerator.cpp">
+      <Filter>litho</Filter>
+    </ClCompile>
+    <ClCompile Include="StrokeRenderer.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="MaskRenderer.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="InfillRenderer.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="windowless_opengl.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LithoRenderer.h">
@@ -82,6 +100,18 @@
     </ClInclude>
     <ClInclude Include="slicer\SnowSlicer.h">
       <Filter>slicer</Filter>
+    </ClInclude>
+    <ClInclude Include="LithoDataGenerator.h">
+      <Filter>litho</Filter>
+    </ClInclude>
+    <ClInclude Include="StrokeRenderer.h">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="MaskRenderer.h">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="InfillRenderer.h">
+      <Filter>Renderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
