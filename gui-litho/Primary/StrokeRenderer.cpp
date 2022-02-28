@@ -7,6 +7,25 @@ StrokeRenderer::~StrokeRenderer()
 	glDeleteBuffers(1, &stroke_vbo_);
 }
 
+void StrokeRenderer::UpdatePolygonsData(LithoModel& model, int layer_id)
+{
+	if (layer_id<model.m_Layers.size())
+	{
+		polygons_.clear();
+		auto& layer = model.m_Layers[layer_id];
+
+		for (auto& polygon:layer.polygons)
+		{
+			std::vector<glm::vec2> curr_polygon;
+			for (auto& point : polygon.points) 
+			{
+				curr_polygon.push_back(glm::vec2(point.x, point.y));
+			}
+			polygons_.push_back(curr_polygon);
+		}
+	}
+}
+
 void StrokeRenderer::CalcStrokeQuad(glm::vec2& curr, glm::vec2& last, glm::vec2& next, glm::vec2& intersection_first, glm::vec2& intersection_second, float thickness)
 {
 	// normlized vector curr-> next 
@@ -45,12 +64,15 @@ void StrokeRenderer::CalcStrokeQuad(glm::vec2& curr, glm::vec2& last, glm::vec2&
 	intersection_second = curr - to_quad;
 }
 
-void StrokeRenderer::GenerateStrokeData()
+void StrokeRenderer::GenerateStrokeVAO()
 {
 	for (auto& ring : polygons_)
 	{
-		std::vector<glm::vec2> curr_stroke;
-		
+		glm::vec2 last_intersection_first;
+		glm::vec2 last_intersection_second;
+		glm::vec2 head_intersection_first;
+		glm::vec2 head_intersection_second;
+
 		for (auto& pt : ring)
 		{
 			glm::vec2 curr, next, last, intersection_first, intersection_second;
@@ -76,15 +98,52 @@ void StrokeRenderer::GenerateStrokeData()
 
 			CalcStrokeQuad(curr, last, next, intersection_first, intersection_second, thickness_pixels_ * pixel_size_);
 			
-			curr_stroke.push_back(intersection_first);
-			curr_stroke.push_back(intersection_second);
+			if (&pt != &ring.front())
+			{
+				// make a quad
+				strokes_data_.push_back(last_intersection_first);
+				strokes_data_.push_back(last_intersection_second);
+				strokes_data_.push_back(intersection_second);
+				strokes_data_.push_back(intersection_first);
+			}
+			else
+			{
+				//
+				head_intersection_first = intersection_first;
+				head_intersection_second = intersection_second;
+			}
+
+			last_intersection_first = intersection_first;
+			last_intersection_second = intersection_second;
 		}
 
-		strokes_data_.push_back(curr_stroke);
-
-		
-
+		// quad between head and tail
+		strokes_data_.push_back(last_intersection_first);
+		strokes_data_.push_back(last_intersection_second);
+		strokes_data_.push_back(head_intersection_second);
+		strokes_data_.push_back(head_intersection_first);
 	}
+
+	// Create VAO
+	glGenVertexArrays(1, &stroke_vao_);
+	glBindVertexArray(stroke_vao_);
+
+	// create vbo
+	GLuint vbo;
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, strokes_data_.size() * 2 * sizeof(GL_FLOAT), &strokes_data_[0].x, GL_STATIC_DRAW);
+	
+	// vbo attrib
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	glBindVertexArray(0);
+}
+
+void StrokeRenderer::MakeShader()
+{
+	stroke_shader_ = new Shader("shader/stroke/1.vert", "shader/stroke/1.frag");
 }
 
 
