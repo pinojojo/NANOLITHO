@@ -7,8 +7,9 @@
 #include <gl/GL.h>
 #include <GL/wglew.h>
 #include <tchar.h>
+#include "LithoModel.h"
+#include "StrokeRenderer.h"
 
-#include "InfillRenderer.h"
 
 // =============================================================================
 //                                  DEFINES/MACROS
@@ -79,7 +80,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	glewInit();
 
 	// Renderer init
-	InfillRenderer infill_renderer(spacing, fill_rate);
+	LithoModel model;
+
+	model.SlicingSTL("../bin/stl/micro-lens-big.stl", 0.005f);
+	StrokeRenderer stroke(3, 0.001);
+	stroke.UpdatePolygonsData(model, 5);
 
 	// Main loop
 	MSG msg;
@@ -105,7 +110,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		glClearColor(0, 0, 0, 1);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		infill_renderer.DrawOffscreen(0.3 + 0.001 * pixel_id, 0.5, 0.001, std::to_string(pixel_id++));
+		// render
+		std::cout << pixel_id << std::endl;
+		stroke.DrawOffscreen(0, 1.0 + 0.001 * pixel_id, 0.001, std::to_string(pixel_id++));
+
 	
 		wglMakeCurrent(g_HDCDeviceContext, g_GLRenderContext);
 		SwapBuffers(g_HDCDeviceContext);

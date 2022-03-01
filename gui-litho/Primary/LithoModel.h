@@ -41,7 +41,42 @@ struct LithoLayer
 	string layer_string;
 
 	vector<SVGPolygon> polygons;
-	
+
+	void GetBoundingBox(float& left, float& right, float& bottom, float& top) 
+	{
+		float _left = 9999999;
+		float _right = -9999999;
+		float _top = -9999999;
+		float _bottom = 9999999;
+		
+		for (auto& polygon:polygons)
+		{
+			for (auto& point : polygon.points)
+			{
+				if (point.x<_left)
+				{
+					_left = point.x;
+				}
+				if (point.x>_right)
+				{
+					_right = point.x;
+				}
+				if (point.y>_top)
+				{
+					_top = point.y;
+				}
+				if (point.y<_bottom)
+				{
+					_bottom = point.x;
+				}
+			}
+		}
+
+		left = _left;
+		right = _right;
+		bottom = _bottom;
+		top = _top;
+	}
 };
 
 class LithoModel
@@ -50,13 +85,19 @@ public:
 
 	LithoModel();
 
+	void SlicingSTL(std::string stl_path, float relative_thickness);
+
+
+
 	void DoParse(std::string filePath);
 
 	void Slicing();
 
+	
+
+
 	// Getter
 	glm::vec2 GetMinMax();
-	void GetAABB(glm::vec2& AABB_x, glm::vec2& AABB_y);
 
 	// Setter
 	void SetThickness(float thickness);

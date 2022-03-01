@@ -19,7 +19,7 @@
 class StrokeRenderer
 {
 public:
-	StrokeRenderer(float thickness_pixels,float pixel_size):thickness_pixels_(thickness_pixels),pixel_size_(pixel_size){}
+	StrokeRenderer(float thickness_pixels, float pixel_size) :thickness_pixels_(thickness_pixels), pixel_size_(pixel_size) { Init(); }
 	~StrokeRenderer();
 
 	void UpdatePolygonsData(LithoModel& model,int layer_id);
@@ -27,23 +27,35 @@ public:
 	void DrawOffscreen(float anchor_x, float anchor_y, float pixel_size,std::string name);
 
 private:
+	void Init();
 	void GenerateStrokeVAO();
-	void MakeShader();
+	void CreateShader();
+	void CreateFBO();
 	void UpdateShader();
 	void CalcStrokeQuad(glm::vec2& curr, glm::vec2& last,glm::vec2& next, glm::vec2& intersection_first, glm::vec2& intersection_second, float thickness);
-	
+	void SaveFBO(GLuint fbo, std::string name);
+
 	float thickness_pixels_;
 	float pixel_size_;
 
 	std::vector<std::vector<glm::vec2>> polygons_;
 	std::vector<glm::vec2> strokes_data_;
 
-	GLuint  stroke_vao_;
-	GLuint  stroke_vbo_;
-	GLuint  stroke_fbo_;
-	GLuint  stroke_tex_;
-	Shader* stroke_shader_;
+	GLuint  stroke_vao_=0;
+	GLuint  stroke_vbo_=0;
+	GLuint  stroke_fbo_=0;
+	GLuint  stroke_tex_=0;
+	Shader* stroke_shader_=NULL;
 	glm::mat4 mvp_;
+	
+	glm::vec2 anchor_;
+	
+
+	int res_x_=1000;
+	int res_y_=1000;
+
+
+	
 
 	
 

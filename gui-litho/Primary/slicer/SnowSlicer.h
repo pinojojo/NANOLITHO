@@ -130,7 +130,7 @@ namespace SnowSlicer
 		long intersections = 0;
 		double m_Zmin;
 		double m_Zmax;
-		double m_Eps = 0.004;
+		double m_Eps = 0.000001;
 		
 		
 

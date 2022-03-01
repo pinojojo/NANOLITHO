@@ -240,7 +240,7 @@ namespace SnowSlicer
 
 		Mesh_Triangle_List_t* A = Mesh_Triangle_List_create(); /* Active triangle list. */
 
-		cout << "start find vertices on each plane" << endl;
+		//cout << "start find vertices on each plane" << endl;
 
 		for (int p = 0; p < k; p++) {
 			/* Add triangles that start between {P[p-1]} and {P[p]}: */
@@ -564,7 +564,7 @@ namespace SnowSlicer
 				if (((deg % 2) != 0) && (ctdeg[deg] > 0)) { closedSlice = false; }
 				if ((verbose || (deg != 2)) && (ctdeg[deg] != 0))
 				{
-					cout << "there are " << ctdeg[deg] << " vertices of degree " << deg << " on plane " << plane << endl;
+					//cout << "there are " << ctdeg[deg] << " vertices of degree " << deg << " on plane " << plane << endl;
 				}
 			}
 			if (!closedSlice) { cout << "** contours of plane " << plane << " are not closed" << endl; }

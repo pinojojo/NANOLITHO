@@ -4,6 +4,34 @@ LithoModel::LithoModel()
 {
 }
 
+void LithoModel::SlicingSTL(std::string stl_path, float relative_thickness)
+{
+    // Get bounding box
+    float left, right, bottom, top;
+    LoadStl(stl_path);
+    left = m_Slicer.m_Mesh.getBottomLeftVertex().x;
+    right = m_Slicer.m_Mesh.getUpperRightVertex().x;
+    bottom = m_Slicer.m_Mesh.getBottomLeftVertex().y;
+    top = m_Slicer.m_Mesh.getUpperRightVertex().y;
+
+    std::cout << std::fixed << std::setprecision(3) <<
+        "left: " << left <<
+        " right: " << right <<
+        " bottom: " << bottom <<
+        " top: " << top << std::endl;
+        
+    
+    // Get thickness
+    float model_size_xy = std::max((right - left), (top - bottom));
+    float thickness = relative_thickness * model_size_xy;
+    
+    // Start Slice then convert
+    m_Slicer.m_Parameter.Thickness = thickness;
+    m_Slicer.m_Parameter.SaveToSVGFile = true;
+    m_Slicer.DoSlice();
+    ConvertToLithoLayer(m_Slicer.m_Polygons);
+}
+
 void LithoModel::DoParse(std::string filePath)
 {
     m_Layers.clear();
