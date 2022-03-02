@@ -80,6 +80,8 @@ namespace SnowSlicer
 		// 3. save results
 		if (m_Parameter.SaveToSVGFile)
 		{
+			ScalePolygonData(m_Polygons);
+			
 			export_svg_2d("sss.svg", m_Polygons, m_Planes.size(), m_Mesh.meshAABBSize());
 		}
 		
@@ -287,12 +289,45 @@ namespace SnowSlicer
 				}
 			}
 			/*End construction.*/
+			
 		}
 		else {
 			//export_svg_no_chaining("segments.svg", segs, k, mesh->meshAABBSize());
 			export_svg_no_chaining("segments.svg", segs, k, mesh->meshAABBSize());
 		}
 	}
+
+	void Slicer::ScalePolygonData(vector<vector<contour>>& polygons)
+	{
+		auto aabb = m_Mesh.meshAABBSize();
+		
+		float size = std::max(aabb.x, aabb.y);
+
+		float scale = 100.f / size;
+
+		ScalePolygonData(polygons, scale);
+	}
+
+	void Slicer::ScalePolygonData(vector<vector<contour>>& polygons, float scale)
+	{
+		
+
+		for (auto& plane:polygons)
+		{
+			for (auto& polygon:plane)
+			{
+				for (auto& point:polygon.P)
+				{
+			
+					point = point * scale;
+					
+				}
+			}
+		}
+	}
+
+
+
 
 	Triangle Slicer::make_triangle(float n0, float n1, float n2, float f0, float f1, float f2, float f3, float f4, float f5, float f6, float f7, float f8, const char* rotate, double eps)
 	{
@@ -889,8 +924,8 @@ namespace SnowSlicer
 				for (size_t index = 0; index < P[i].P.size(); index++) {
 					const v3& p0 = P[i].P.at(index);
 					//cout << "point " << index <<" " << p0.x << " " << p0.y << endl;
-					dx = (float)(p % slicePerRow) * (aabbSize.x * 1.05f);
-					dy = (float)(p / slicePerRow) * (aabbSize.y * 1.05f);
+					dx = (float)(p % slicePerRow) * (aabbSize.x * 100.05f);
+					dy = (float)(p / slicePerRow) * (aabbSize.y * 100.05f);
 					if (index < (P[i].P.size() - 1)) {
 						const v3& p1 = P[i].P.at(index + 1);
 						//if (P[i].external) {

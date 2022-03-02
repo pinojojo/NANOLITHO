@@ -8,6 +8,7 @@
 #include <GL/wglew.h>
 #include <tchar.h>
 #include "LithoModel.h"
+#include "LithoSVG.h"
 #include "StrokeRenderer.h"
 
 
@@ -80,11 +81,14 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	glewInit();
 
 	// Renderer init
-	LithoModel model;
-
-	model.SlicingSTL("../bin/stl/micro-lens-big.stl", 0.005f);
-	StrokeRenderer stroke(3, 0.001);
-	stroke.UpdatePolygonsData(model, 5);
+	litho::LithoSVG svg;
+	//svg.LoadSVG("../bin/svg/new.svg");
+	svg.LoadSVGFromStl("../bin/stl/micro-lens.stl", glm::vec3(100, 100, 100));
+	/*LithoModel model;
+	model.SlicingSTL("../bin/stl/lambss.stl", 0.01f);*/
+	
+	/*StrokeRenderer stroke(3, 0.001);
+	stroke.UpdatePolygonsData(model, 5);*/
 
 	// Main loop
 	MSG msg;
@@ -112,7 +116,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 		// render
 		std::cout << pixel_id << std::endl;
-		stroke.DrawOffscreen(0, 1.0 + 0.001 * pixel_id, 0.001, std::to_string(pixel_id++));
+		//stroke.DrawOffscreen(0, 1.0 + 0.001 * pixel_id, 0.001, std::to_string(pixel_id++));
 
 	
 		wglMakeCurrent(g_HDCDeviceContext, g_GLRenderContext);

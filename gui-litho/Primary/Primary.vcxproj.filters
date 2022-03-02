@@ -63,9 +63,6 @@
     <ClCompile Include="csharp_interface.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="LithoDataGenerator.cpp">
-      <Filter>litho</Filter>
-    </ClCompile>
     <ClCompile Include="StrokeRenderer.cpp">
       <Filter>Renderer</Filter>
     </ClCompile>
@@ -77,6 +74,9 @@
     </ClCompile>
     <ClCompile Include="windowless_opengl.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="LithoSVG.cpp">
+      <Filter>litho</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -92,17 +92,11 @@
     <ClInclude Include="LPerformance.h">
       <Filter>litho</Filter>
     </ClInclude>
-    <ClInclude Include="LithoSlicer.h">
-      <Filter>imgui</Filter>
-    </ClInclude>
     <ClInclude Include="slicer\DataType.h">
       <Filter>slicer</Filter>
     </ClInclude>
     <ClInclude Include="slicer\SnowSlicer.h">
       <Filter>slicer</Filter>
-    </ClInclude>
-    <ClInclude Include="LithoDataGenerator.h">
-      <Filter>litho</Filter>
     </ClInclude>
     <ClInclude Include="StrokeRenderer.h">
       <Filter>Renderer</Filter>
@@ -112,6 +106,9 @@
     </ClInclude>
     <ClInclude Include="InfillRenderer.h">
       <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="LithoSVG.h">
+      <Filter>litho</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

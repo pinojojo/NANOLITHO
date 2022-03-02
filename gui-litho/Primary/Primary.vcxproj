@@ -43,7 +43,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -156,9 +156,9 @@
     <ClCompile Include="..\inc\imgui\imgui_widgets.cpp" />
     <ClCompile Include="csharp_interface.cpp" />
     <ClCompile Include="InfillRenderer.cpp" />
-    <ClCompile Include="LithoDataGenerator.cpp" />
     <ClCompile Include="LithoModel.cpp" />
     <ClCompile Include="LithoRenderer.cpp" />
+    <ClCompile Include="LithoSVG.cpp" />
     <ClCompile Include="LPerformance.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MaskRenderer.cpp" />
@@ -168,10 +168,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="InfillRenderer.h" />
-    <ClInclude Include="LithoDataGenerator.h" />
     <ClInclude Include="LithoModel.h" />
     <ClInclude Include="LithoRenderer.h" />
-    <ClInclude Include="LithoSlicer.h" />
+    <ClInclude Include="LithoSVG.h" />
     <ClInclude Include="LPerformance.h" />
     <ClInclude Include="MaskRenderer.h" />
     <ClInclude Include="shader.h" />

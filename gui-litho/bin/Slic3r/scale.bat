@@ -1,0 +1,1 @@
+.\Slic3r-console.exe --export-svg micro-lens.stl --scale-to-fit 200,200,200 --layer-height 0.1 -o fit.svg

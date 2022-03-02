@@ -232,16 +232,7 @@ void LithoModel::ProcessLayerPolygons(LithoLayer& layer)
     //cout << layer.name << " has " << startPos.size()<<" "<<endPos.size() << endl;
 
 
-    // parsing each polyogn to fill polygons with data 
-    for (size_t polygonId = 0; polygonId < startPos.size(); polygonId++)
-    {
-        SVGPolygon polygon;
-        string polygonString = layer.layer_string.substr(startPos[polygonId], endPos[polygonId]-startPos[polygonId]);
-        ProcessPolygonString(polygonString, polygon);
-
-        layer.polygons.push_back(polygon);
-    }
-
+    
 
 
 

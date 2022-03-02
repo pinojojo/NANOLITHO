@@ -61,6 +61,10 @@ namespace SnowSlicer
 		void DoSlice();
 		void ClearData();
 
+		void ScalePolygonData(vector<vector<contour>>& polygons);
+		void ScalePolygonData(vector<vector<contour>>& polygons, float scale);
+
+
 	private://stage funciton
 		
 	
@@ -72,7 +76,6 @@ namespace SnowSlicer
 		void IncrementalSlicing(const TriangleMesh* mesh, vector<float> P, float delta, bool srt, vector<vector<contour>>& polygons, bool chaining, bool orienting);
 		
 		
-
 
 	private:// tool function
 		Triangle make_triangle(
