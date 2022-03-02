@@ -20,7 +20,7 @@ void litho::LithoSVG::LoadSVGFromStl(string stl_path, glm::vec3 bounding_box)
     }
 
     // slic3r
-    Slic3rCLI("-", "-", 1, 1);
+    Slic3rCLI("../bin/stl/micro-s", "-", 1, 1);
     
 }
 
@@ -270,13 +270,13 @@ void litho::LithoSVG::GetRawSTLInfo(std::string stl_path, glm::vec3& size, glm::
 
 void litho::LithoSVG::Slic3rCLI(string input_path, string output_path, float scale, float thickness)
 {
-    std::wstring cmdArgslistSetChannel = L"Slic3r/Slic3r-console.exe";
-    cmdArgslistSetChannel += L" --export-svg";
-    cmdArgslistSetChannel += L" --scale 300%";
-    cmdArgslistSetChannel += L" --layer-height 0.1";
-    cmdArgslistSetChannel += L" -o ppp.svg";
+    std::string cmd_args = "Slic3r-console.exe";
+    cmd_args += " --export-svg";
+    cmd_args += " ../bin/stl/micro-lens.stl";
+    cmd_args += " --scale 300";
+    cmd_args += " --layer-height 0.1";
+    cmd_args += " -o ppp.svg";
 
-    
 
     PROCESS_INFORMATION pi;
 
@@ -285,8 +285,8 @@ void litho::LithoSVG::Slic3rCLI(string input_path, string output_path, float sca
     si.cb = sizeof(STARTUPINFO);
 
     if (CreateProcess(
-        L"Slic3r/Slic3r-console.exe",
-        cmdArgslistSetChannel.c_str(),
+        "../bin/Slic3r/Slic3r-console.exe",
+        &cmd_args[0],
         NULL, 
         NULL, 
         TRUE, 
