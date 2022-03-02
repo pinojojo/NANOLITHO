@@ -19,8 +19,11 @@ void litho::LithoSVG::LoadSVGFromStl(string stl_path, glm::vec3 bounding_box)
         scaling_value = bounding_box.x / box.x;
     }
 
+    glm::vec3 new_box = box * scaling_value;
+    
+
     // slic3r
-    Slic3rCLI("../bin/stl/micro-s", "-", 1, 1);
+    Slic3rCLI("../bin/stl/micro-s", "../bin/output/ooo.svg", scaling_value, new_box.z / 100.f);
     
 }
 
@@ -273,9 +276,9 @@ void litho::LithoSVG::Slic3rCLI(string input_path, string output_path, float sca
     std::string cmd_args = "Slic3r-console.exe";
     cmd_args += " --export-svg";
     cmd_args += " ../bin/stl/micro-lens.stl";
-    cmd_args += " --scale 300";
-    cmd_args += " --layer-height 0.1";
-    cmd_args += " -o ppp.svg";
+    cmd_args += " --scale " + std::to_string(scale);
+    cmd_args += " --layer-height "+std::to_string(thickness);
+    cmd_args += " -o " + output_path;
 
 
     PROCESS_INFORMATION pi;
@@ -285,7 +288,7 @@ void litho::LithoSVG::Slic3rCLI(string input_path, string output_path, float sca
     si.cb = sizeof(STARTUPINFO);
 
     if (CreateProcess(
-        "../bin/Slic3r/Slic3r-console.exe",
+        "../bin/slic3r-lzx/Slic3r-console.exe",
         &cmd_args[0],
         NULL, 
         NULL, 
