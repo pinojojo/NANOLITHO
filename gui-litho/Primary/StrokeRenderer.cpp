@@ -9,23 +9,24 @@ StrokeRenderer::~StrokeRenderer()
 	glDeleteVertexArrays(1, &stroke_vao_);
 }
 
-void StrokeRenderer::UpdatePolygonsData(LithoModel& model, int layer_id)
+void StrokeRenderer::UpdatePolygonsData(litho::LithoSVG& svg, int layer_id)
 {
-	if (layer_id<model.m_Layers.size())
+	if (layer_id<svg.data_.size())
 	{
 		polygons_.clear();
-		auto& layer = model.m_Layers[layer_id];
-
+		auto& layer = svg.data_[layer_id];
 		for (auto& polygon:layer.polygons)
 		{
 			std::vector<glm::vec2> curr_polygon;
-			for (auto& point : polygon.points) 
+			for (auto& point:polygon.points)
 			{
-				curr_polygon.push_back(glm::vec2(point.x, point.y));
+				curr_polygon.push_back(point);
 			}
 			polygons_.push_back(curr_polygon);
 		}
 	}
+
+	center_ = svg.GetCenter();
 
 	if (stroke_vao_)
 	{
@@ -33,10 +34,11 @@ void StrokeRenderer::UpdatePolygonsData(LithoModel& model, int layer_id)
 		glDeleteVertexArrays(1, &stroke_vao_);
 		GenerateStrokeVAO();
 	}
-	else 
+	else
 	{
 		GenerateStrokeVAO();
 	}
+
 
 }
 
@@ -65,6 +67,7 @@ void StrokeRenderer::DrawOffscreen(float anchor_x, float anchor_y, float pixel_s
 
 }
 
+// Use coordinate system for print space
 void StrokeRenderer::DrawOffscreen(float anchor_x, float anchor_y, float pixel_size, std::string name)
 {
 	DrawOffscreen(anchor_x, anchor_y, pixel_size);
@@ -269,7 +272,7 @@ void StrokeRenderer::UpdateShader()
 	bottom = anchor_.y - pixel_size_ * res_y_;
 	top = anchor_.y;
 
-	glm::mat4 proj = glm::ortho(left, right, bottom, top, -1.f, 1.f);
+	glm::mat4 proj = glm::ortho(left + center_.x, right + center_.x, bottom + center_.y, top + center_.y, -1.f, 1.f);
 	mvp_ = proj;
 
 	stroke_shader_->use();

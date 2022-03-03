@@ -1,5 +1,4 @@
 #pragma once
-#include <Windows.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -49,7 +48,9 @@ namespace litho
 		glm::vec2 GetUpperRight();
 		glm::vec2 GetBottomLeft();
 
-		
+		glm::vec2 GetCenter();
+
+		vector<Layer> data_;
 	private:
 		void ParseXML();
 		void ParseLayer(Layer& layer);
@@ -58,9 +59,6 @@ namespace litho
 		void GetRawSTLInfo(std::string stl_path, glm::vec3& size, glm::vec3& corner);
 
 		void Slic3rCLI(string input_path, string output_path, float scale, float thickness);
-		
-
-		vector<Layer> data_;
 		
 		string svg_path_;
 		string stl_path_;

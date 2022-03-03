@@ -1,3 +1,4 @@
+#include <Windows.h>
 #include "LithoSVG.h"
 
 void litho::LithoSVG::LoadSVGFromStl(string stl_path, glm::vec3 bounding_box)
@@ -24,6 +25,8 @@ void litho::LithoSVG::LoadSVGFromStl(string stl_path, glm::vec3 bounding_box)
 
     // slic3r
     Slic3rCLI("../bin/stl/micro-s", "../bin/output/ooo.svg", scaling_value, new_box.z / 100.f);
+
+    LoadSVG("../bin/output/ooo.svg");
     
 }
 
@@ -45,6 +48,64 @@ void litho::LithoSVG::LoadSVG(string svg_path)
             << " z: "<<layer.z_value
             << " has " << std::to_string(layer.polygons.size()) << " polygons "<<std::endl;
     }
+}
+
+glm::vec2 litho::LithoSVG::GetUpperRight()
+{
+    glm::vec2 ret(-9999999, -9999999);
+    for (auto& layer:data_)
+    {
+        for (auto& polygon : layer.polygons)
+        {
+            for (auto& point : polygon.points) 
+            {
+                if (point.x>ret.x)
+                {
+                    ret.x = point.x;
+                }
+                if (point.y>ret.y)
+                {
+                    ret.y = point.y;
+                }
+            }
+        }
+    }
+
+    return ret;
+}
+
+glm::vec2 litho::LithoSVG::GetBottomLeft()
+{
+    glm::vec2 ret(9999999, 9999999);
+    for (auto& layer : data_)
+    {
+        for (auto& polygon : layer.polygons)
+        {
+            for (auto& point : polygon.points)
+            {
+                if (point.x < ret.x)
+                {
+                    ret.x = point.x;
+                }
+                if (point.y < ret.y)
+                {
+                    ret.y = point.y;
+                }
+            }
+        }
+    }
+
+    return ret;
+}
+
+glm::vec2 litho::LithoSVG::GetCenter()
+{
+    glm::vec2 corner_first = GetUpperRight();
+    glm::vec2 corner_second = GetBottomLeft();
+    glm::vec2 ret = corner_first + corner_second;
+    ret = ret / 2.f;
+
+    return ret;
 }
 
 void litho::LithoSVG::ParseXML()

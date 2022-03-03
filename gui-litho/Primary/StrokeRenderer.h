@@ -1,10 +1,13 @@
 #pragma once
+#include "LithoSVG.h"
+
+
 #define GLM_FORCE_RADIANS
 #include <GL/glew.h>
 #include <gl/GL.h>
 
 #include "shader.h"
-#include "LithoModel.h"
+
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -22,9 +25,12 @@ public:
 	StrokeRenderer(float thickness_pixels, float pixel_size) :thickness_pixels_(thickness_pixels), pixel_size_(pixel_size) { Init(); }
 	~StrokeRenderer();
 
-	void UpdatePolygonsData(LithoModel& model,int layer_id);
+	void UpdatePolygonsData(litho::LithoSVG& svg,int layer_id);
+	
 	void DrawOffscreen(float anchor_x, float anchor_y, float pixel_size);
 	void DrawOffscreen(float anchor_x, float anchor_y, float pixel_size,std::string name);
+
+	void SetCenter(glm::vec2 center) { center_ = center; }
 
 private:
 	void Init();
@@ -49,6 +55,7 @@ private:
 	glm::mat4 mvp_;
 	
 	glm::vec2 anchor_;
+	glm::vec2 center_ = glm::vec2(0);
 	
 
 	int res_x_=1000;
