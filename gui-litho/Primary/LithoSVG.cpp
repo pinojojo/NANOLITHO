@@ -263,8 +263,8 @@ void litho::LithoSVG::GetRawSTLInfo(std::string stl_path, glm::vec3& size, glm::
     }
 
     std::cout
-        << "upper " << bbox_corner_upper.x << " " << bbox_corner_upper.y << " " << bbox_corner_upper.z << " " << std::endl
-        << "lower " << bbox_corner_lower.x << " " << bbox_corner_lower.y << " " << bbox_corner_lower.z << " " << std::endl;
+        << "lower " << bbox_corner_lower.x << " " << bbox_corner_lower.y << " " << bbox_corner_lower.z << " " << std::endl
+        << "upper " << bbox_corner_upper.x << " " << bbox_corner_upper.y << " " << bbox_corner_upper.z << " " << std::endl;
 
     size = bbox_corner_upper - bbox_corner_lower;
     
@@ -298,7 +298,10 @@ void litho::LithoSVG::Slic3rCLI(string input_path, string output_path, float sca
         NULL, 
         &si, &pi))
     {
-        
+        WaitForSingleObject(pi.hProcess, INFINITE);
+        CloseHandle(pi.hThread);
+        CloseHandle(pi.hProcess);
+        std::cout << "slic3r done! " << std::endl;
     }
     else
     {
