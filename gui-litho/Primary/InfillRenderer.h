@@ -22,9 +22,12 @@ enum PatternMode {
 class InfillRenderer
 {
 public:
+	InfillRenderer() {}
 	InfillRenderer(float spacing_pixels) :spacing_pixels_(spacing_pixels) { Init(); }
 	InfillRenderer(float spacing_pixels, float filling_rate) :spacing_pixels_(spacing_pixels), filling_rate_(filling_rate) { Init(); }
 	~InfillRenderer();
+
+	void Init(float spacing_pixels, float filling_rate);
 
 	void Draw(float anchor_x, float anchor_y, float pixel_size);
 	void DrawOffscreen(float anchor_x, float anchor_y, float pixel_size, std::string name);

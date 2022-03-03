@@ -9,6 +9,13 @@ StrokeRenderer::~StrokeRenderer()
 	glDeleteVertexArrays(1, &stroke_vao_);
 }
 
+void StrokeRenderer::Init(float thickness_pixels, float pixel_size)
+{
+	thickness_pixels_ = thickness_pixels;
+	pixel_size_ = pixel_size;
+	Init();
+}
+
 void StrokeRenderer::UpdatePolygonsData(litho::LithoSVG& svg, int layer_id)
 {
 	if (layer_id<svg.data_.size())

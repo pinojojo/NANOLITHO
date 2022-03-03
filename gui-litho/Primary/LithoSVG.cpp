@@ -332,6 +332,45 @@ void litho::LithoSVG::GetRawSTLInfo(std::string stl_path, glm::vec3& size, glm::
     corner = bbox_corner_lower;
 }
 
+void litho::LithoSVG::GetEachLayerBoundingBox()
+{
+    for (auto& layer:data_)
+    {
+        float left = 9999999;
+        float right = -9999999;
+        float bottom = 9999999;
+        float top = -9999999;
+
+        for (auto& polygon:layer.polygons)
+        {
+            for (auto& point : polygon.points)
+            {
+                if (point.x<left)
+                {
+                    left = point.x;
+                }
+                if (point.x>right)
+                {
+                    right = point.x;
+                }
+                if (point.y<bottom)
+                {
+                    bottom = point.y;
+                }
+                if (point.y>top)
+                {
+                    top = point.y;
+                }
+            }
+        }
+        
+        layer.left = left;
+        layer.right = right;
+        layer.bottom = bottom;
+        layer.top = top;
+    }
+}
+
 void litho::LithoSVG::Slic3rCLI(string input_path, string output_path, float scale, float thickness)
 {
     std::string cmd_args = "Slic3r-console.exe";

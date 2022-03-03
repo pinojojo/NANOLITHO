@@ -6,6 +6,16 @@ InfillRenderer::~InfillRenderer()
 	glDeleteFramebuffers(1, &infill_tex_);
 }
 
+void InfillRenderer::Init(float spacing_pixels, float filling_rate)
+{
+	spacing_pixels_ = spacing_pixels;
+
+	filling_rate_ = filling_rate;
+
+	Init();
+
+}
+
 void InfillRenderer::Draw(float anchor_x, float anchor_y, float pixel_size)
 {
 	pixel_size_ = pixel_size; anchor_x_ = anchor_x; anchor_y_ = anchor_y;

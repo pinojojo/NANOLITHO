@@ -15,12 +15,20 @@
 #include <vector>
 
 
-struct SubWindow
+struct Block
 {
-	int res_x;
-	int rex_y;
 	glm::vec2 anchor;
 	glm::vec2 size;
+	int res_x;
+	int res_y;
+};
+
+struct Strip
+{
+	glm::vec2 anchor;
+	glm::vec2 size;
+	std::vector<Block> blocks;
+	int width;
 };
 
 struct DataMatrix
@@ -28,7 +36,7 @@ struct DataMatrix
 	int ID;
 	int cols;
 	int rows;
-	std::vector<SubWindow> windows;
+	std::vector<Strip> strips;
 	glm::vec2 position;
 	float hatch_distance;
 
@@ -45,28 +53,32 @@ namespace litho
 	public:
 		LithoExporter(LithoSetting& setting);
 
-
-		void Slice();
-
-
+		void ConvertToXML();
 
 	private:
+		void GenerateDataMatrices();
+		void GenerateStrips(DataMatrix& data_matrix);
+		void GenerateBlock(Strip& strip);
+
 
 		void WriteMatrix(FILE* file, DataMatrix data_matrix);
 
 		void WritePixelData(FILE* file, GLuint tex);
 
-		void GenerateSubWindows();
 
-		GLuint RasterizeSingleSubWindow(SubWindow sub_window);
+
+
+		GLuint RasterizeSingleBlock(Block block);
 
 		void GetLayerBoundingbox(glm::vec2& anchor, glm::vec2& box, int layer_id);
 
+		void FindPixelAlignedBoundingBox(float pixel_size);
 
-
+		
+		
 
 		litho::LithoSVG svg_;
-
+		float relative_pixel_size_;
 		std::vector<DataMatrix> data_matrices_;
 
 	};
