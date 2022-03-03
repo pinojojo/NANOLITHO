@@ -367,4 +367,4 @@ FodyWeavers.xsd
 # Obj in bin folder Models 
 !bin/model/*.obj
 
- !**/slic3r-lzx/**
+!**/Slic3r/**

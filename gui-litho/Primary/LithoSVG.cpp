@@ -288,7 +288,7 @@ void litho::LithoSVG::Slic3rCLI(string input_path, string output_path, float sca
     si.cb = sizeof(STARTUPINFO);
 
     if (CreateProcess(
-        "../bin/slic3r-lzx/Slic3r-console.exe",
+        "../bin/Slic3r/Slic3r-console.exe",
         &cmd_args[0],
         NULL, 
         NULL, 
