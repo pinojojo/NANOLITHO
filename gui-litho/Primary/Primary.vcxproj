@@ -155,18 +155,21 @@
     <ClCompile Include="..\inc\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\inc\imgui\imgui_widgets.cpp" />
     <ClCompile Include="InfillRenderer.cpp" />
+    <ClCompile Include="LithoExporter.cpp" />
     <ClCompile Include="LithoSVG.cpp" />
-    <ClCompile Include="LPerformance.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MaskRenderer.cpp" />
+    <ClCompile Include="PatternRenderer.cpp" />
     <ClCompile Include="StrokeRenderer.cpp" />
     <ClCompile Include="windowless_opengl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="InfillRenderer.h" />
+    <ClInclude Include="LithoExporter.h" />
     <ClInclude Include="LithoSVG.h" />
-    <ClInclude Include="LPerformance.h" />
+    <ClInclude Include="LithoType.h" />
     <ClInclude Include="MaskRenderer.h" />
+    <ClInclude Include="PatternRenderer.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="StrokeRenderer.h" />
   </ItemGroup>

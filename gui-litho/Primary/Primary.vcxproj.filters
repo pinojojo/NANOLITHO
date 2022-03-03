@@ -9,18 +9,18 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="imgui">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="litho">
-      <UniqueIdentifier>{d3448bd3-6379-4d1e-abb6-75523ecf5d7e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Renderer">
       <UniqueIdentifier>{79da61ed-6411-4d08-9fab-91559265d575}</UniqueIdentifier>
     </Filter>
     <Filter Include="OpenGL">
       <UniqueIdentifier>{c8ba3bcb-f218-42d5-9692-164176bdc797}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Litho">
+      <UniqueIdentifier>{d3448bd3-6379-4d1e-abb6-75523ecf5d7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGui">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -28,28 +28,25 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\inc\imgui\imgui.cpp">
-      <Filter>imgui</Filter>
+      <Filter>ImGui</Filter>
     </ClCompile>
     <ClCompile Include="..\inc\imgui\imgui_demo.cpp">
-      <Filter>imgui</Filter>
+      <Filter>ImGui</Filter>
     </ClCompile>
     <ClCompile Include="..\inc\imgui\imgui_draw.cpp">
-      <Filter>imgui</Filter>
+      <Filter>ImGui</Filter>
     </ClCompile>
     <ClCompile Include="..\inc\imgui\imgui_impl_opengl3.cpp">
-      <Filter>imgui</Filter>
+      <Filter>ImGui</Filter>
     </ClCompile>
     <ClCompile Include="..\inc\imgui\imgui_impl_win32.cpp">
-      <Filter>imgui</Filter>
+      <Filter>ImGui</Filter>
     </ClCompile>
     <ClCompile Include="..\inc\imgui\imgui_tables.cpp">
-      <Filter>imgui</Filter>
+      <Filter>ImGui</Filter>
     </ClCompile>
     <ClCompile Include="..\inc\imgui\imgui_widgets.cpp">
-      <Filter>imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="LPerformance.cpp">
-      <Filter>litho</Filter>
+      <Filter>ImGui</Filter>
     </ClCompile>
     <ClCompile Include="StrokeRenderer.cpp">
       <Filter>Renderer</Filter>
@@ -64,13 +61,16 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="LithoSVG.cpp">
-      <Filter>litho</Filter>
+      <Filter>Litho</Filter>
+    </ClCompile>
+    <ClCompile Include="PatternRenderer.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="LithoExporter.cpp">
+      <Filter>Litho</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="LPerformance.h">
-      <Filter>litho</Filter>
-    </ClInclude>
     <ClInclude Include="StrokeRenderer.h">
       <Filter>Renderer</Filter>
     </ClInclude>
@@ -81,10 +81,19 @@
       <Filter>Renderer</Filter>
     </ClInclude>
     <ClInclude Include="LithoSVG.h">
-      <Filter>litho</Filter>
+      <Filter>Litho</Filter>
     </ClInclude>
     <ClInclude Include="shader.h">
       <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="PatternRenderer.h">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="LithoExporter.h">
+      <Filter>Litho</Filter>
+    </ClInclude>
+    <ClInclude Include="LithoType.h">
+      <Filter>Litho</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
