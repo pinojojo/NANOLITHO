@@ -3,7 +3,7 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-!/slic3r-lzx/
+
 
 # User-specific files
 *.rsuser
@@ -366,3 +366,5 @@ FodyWeavers.xsd
 
 # Obj in bin folder Models 
 !bin/model/*.obj
+
+ !**/slic3r-lzx/**
