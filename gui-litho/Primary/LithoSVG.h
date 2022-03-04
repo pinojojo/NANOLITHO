@@ -25,8 +25,14 @@ namespace litho
 		string type;
 		string style;
 		vector<glm::vec2> points;
-		
 		string polygon_string;
+
+		float left;
+		float right;
+		float bottom;
+		float top;
+		
+
 	};
 
 	struct Layer
@@ -35,10 +41,7 @@ namespace litho
 		float z_value;
 		vector<Polygon> polygons;
 		string layer_string;
-		float left;
-		float right;
-		float top;
-		float bottom;
+		
 
 		float left_aligned;
 		float right_aligned;
@@ -47,6 +50,11 @@ namespace litho
 
 		int pixel_num_x;
 		int pixel_num_y;
+
+		float left;
+		float right;
+		float top;
+		float bottom;
 		
 	};
 
@@ -55,7 +63,11 @@ namespace litho
 
 	public:
 		
-		void LoadSVGFromStl(string stl_path,glm::vec3 bounding_box);
+
+		// resize along one direction
+		void LoadSVGFromStl(string stl_path, float size, bool along_x, float thickness);;
+		// resize to a bounding box
+		void LoadSVGFromStl(string stl_path, glm::vec3 bounding_box);
 		void LoadSVG(string svg_path);
 
 		glm::vec2 GetUpperRight();

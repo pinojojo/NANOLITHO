@@ -2,6 +2,10 @@
 
 
 
+StrokeRenderer::StrokeRenderer()
+{
+}
+
 StrokeRenderer::~StrokeRenderer()
 {
 
@@ -13,10 +17,10 @@ void StrokeRenderer::Init(float thickness_pixels, float pixel_size)
 {
 	thickness_pixels_ = thickness_pixels;
 	pixel_size_ = pixel_size;
-	Init();
+	CreateGL();
 }
 
-void StrokeRenderer::UpdatePolygonsData(litho::LithoSVG& svg, int layer_id)
+void StrokeRenderer::UpdateLayer(litho::LithoSVG& svg, int layer_id)
 {
 	if (layer_id<svg.data_.size())
 	{
@@ -49,18 +53,29 @@ void StrokeRenderer::UpdatePolygonsData(litho::LithoSVG& svg, int layer_id)
 
 }
 
-void StrokeRenderer::DrawOffscreen(float anchor_x, float anchor_y, float pixel_size)
+// Use coordinate system for print space
+void StrokeRenderer::DrawOffscreen(float anchor_x, float anchor_y, float pixel_size, std::string name)
 {
-	pixel_size_ = pixel_size; anchor_.x = anchor_x; anchor_.y = anchor_y;
+	DrawOffscreen(anchor_x, anchor_y, pixel_size);
+	SaveFBO(stroke_fbo_, name);
+}
+
+GLuint StrokeRenderer::Raster(float left, float right, float bottom, float top, int rows, int cols)
+{
+	// resize 
+	if ((rows!=rows_)||(cols!=cols_))
+	{
+		ReSize();
+	}
 
 	// bind fbo
 	glBindFramebuffer(GL_FRAMEBUFFER, stroke_fbo_);
-	glViewport(0, 0, res_x_, res_y_);
+	glViewport(0, 0, cols_, rows_);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// bind shader
-	UpdateShader();
+	// update shader
+	UpdateShader(left, right, bottom,top );
 
 	// bind vao
 	glBindVertexArray(stroke_vao_);
@@ -68,17 +83,11 @@ void StrokeRenderer::DrawOffscreen(float anchor_x, float anchor_y, float pixel_s
 	// draw call
 	glDrawArrays(GL_QUADS, 0, strokes_data_.size());
 
-	// delete
+	// unbind
 	glBindVertexArray(0);
 	glUseProgram(0);
-
-}
-
-// Use coordinate system for print space
-void StrokeRenderer::DrawOffscreen(float anchor_x, float anchor_y, float pixel_size, std::string name)
-{
-	DrawOffscreen(anchor_x, anchor_y, pixel_size);
-	SaveFBO(stroke_fbo_, name);
+	
+	return stroke_tex_;
 }
 
 void StrokeRenderer::CalcStrokeQuad(glm::vec2& curr, glm::vec2& last, glm::vec2& next, glm::vec2& intersection_first, glm::vec2& intersection_second, float thickness)
@@ -124,8 +133,8 @@ void StrokeRenderer::SaveFBO(GLuint fbo, std::string name)
 	FILE* output_image;
 	int     output_width, output_height;
 
-	output_width = res_x_;
-	output_height = res_y_;
+	output_width = cols_;
+	output_height = rows_;
 
 	/// READ THE PIXELS VALUES from FBO AND SAVE TO A .PPM FILE
 	int             i, j, k;
@@ -165,10 +174,17 @@ void StrokeRenderer::SaveFBO(GLuint fbo, std::string name)
 
 }
 
-void StrokeRenderer::Init()
+void StrokeRenderer::CreateGL()
 {
 	CreateFBO();
 	CreateShader();
+}
+
+void StrokeRenderer::ReSize()
+{
+	// recreate opengl stuff
+	
+
 }
 
 void StrokeRenderer::GenerateStrokeVAO()
@@ -261,7 +277,7 @@ void StrokeRenderer::CreateFBO()
 	// create a color attachment texture
 	glGenTextures(1, &stroke_tex_);
 	glBindTexture(GL_TEXTURE_2D, stroke_tex_);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, res_x_, res_y_, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, cols_, rows_, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, stroke_tex_, 0);	// we only need a color buffer
@@ -271,15 +287,11 @@ void StrokeRenderer::CreateFBO()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void StrokeRenderer::UpdateShader()
+void StrokeRenderer::UpdateShader(float left, float right, float bottom, float top)
 {
-	float left, right, bottom, top;
-	left = anchor_.x;
-	right = anchor_.x + pixel_size_ * res_x_;
-	bottom = anchor_.y - pixel_size_ * res_y_;
-	top = anchor_.y;
+	
 
-	glm::mat4 proj = glm::ortho(left + center_.x, right + center_.x, bottom + center_.y, top + center_.y, -1.f, 1.f);
+	glm::mat4 proj = glm::ortho(left, right, bottom, top, -1.f, 1.f);
 	mvp_ = proj;
 
 	stroke_shader_->use();

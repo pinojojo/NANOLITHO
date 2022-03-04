@@ -7,6 +7,7 @@
 #include "LithoType.h"
 #include "LithoSVG.h"
 
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
@@ -18,22 +19,27 @@
 struct Block
 {
 	glm::vec2 anchor;
-	glm::vec2 size;
-	int res_x;
-	int res_y;
+	int width;
+	int height;
+	float pixel_size;
 };
 
 struct Strip
 {
+	int absolute_id;
+	int relative_id;
 	glm::vec2 anchor;
-	glm::vec2 size;
 	std::vector<Block> blocks;
 	int width;
+	int height;
+	float pixel_size;
+	float hatch_distance;
+	
 };
 
-struct DataMatrix
+struct AdaptiveLayer
 {
-	int ID;
+	int id;
 	int cols;
 	int rows;
 	std::vector<Strip> strips;
@@ -56,21 +62,14 @@ namespace litho
 		void ConvertToXML();
 
 	private:
-		void GenerateDataMatrices();
-		void GenerateStrips(DataMatrix& data_matrix);
+	
+
+		void GenerateAdaptiveLayers();
+		void GenerateStrips(AdaptiveLayer& adaptive_layer);
 		void GenerateBlock(Strip& strip);
 
-
-		void WriteMatrix(FILE* file, DataMatrix data_matrix);
-
-		void WritePixelData(FILE* file, GLuint tex);
-
-
-
-
-		GLuint RasterizeSingleBlock(Block block);
-
-		void GetLayerBoundingbox(glm::vec2& anchor, glm::vec2& box, int layer_id);
+		void RasterizeStrip();
+		void RasterizeBlock(Block block);
 
 		void FindPixelAlignedBoundingBox(float pixel_size);
 
@@ -78,8 +77,11 @@ namespace litho
 		
 
 		litho::LithoSVG svg_;
-		float relative_pixel_size_;
-		std::vector<DataMatrix> data_matrices_;
+
+		std::vector<AdaptiveLayer> adaptive_layers_;
+		LithoSetting setting_;
+
+
 
 	};
 

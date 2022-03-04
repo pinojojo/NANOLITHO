@@ -9,6 +9,5 @@ void MaskRenderer::Init(glm::vec2 anchor, float pixel_size)
 
 void MaskRenderer::Init()
 {
-	UpdateVAO();
-	
+
 }

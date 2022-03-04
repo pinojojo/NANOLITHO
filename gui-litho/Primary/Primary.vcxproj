@@ -159,7 +159,7 @@
     <ClCompile Include="LithoSVG.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MaskRenderer.cpp" />
-    <ClCompile Include="PatternRenderer.cpp" />
+    <ClCompile Include="Rasterizer.cpp" />
     <ClCompile Include="StrokeRenderer.cpp" />
     <ClCompile Include="windowless_opengl.cpp" />
   </ItemGroup>
@@ -169,7 +169,7 @@
     <ClInclude Include="LithoSVG.h" />
     <ClInclude Include="LithoType.h" />
     <ClInclude Include="MaskRenderer.h" />
-    <ClInclude Include="PatternRenderer.h" />
+    <ClInclude Include="Rasterizer.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="StrokeRenderer.h" />
   </ItemGroup>

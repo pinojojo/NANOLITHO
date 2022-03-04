@@ -63,11 +63,11 @@
     <ClCompile Include="LithoSVG.cpp">
       <Filter>Litho</Filter>
     </ClCompile>
-    <ClCompile Include="PatternRenderer.cpp">
-      <Filter>Renderer</Filter>
-    </ClCompile>
     <ClCompile Include="LithoExporter.cpp">
       <Filter>Litho</Filter>
+    </ClCompile>
+    <ClCompile Include="Rasterizer.cpp">
+      <Filter>Renderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -86,14 +86,14 @@
     <ClInclude Include="shader.h">
       <Filter>OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="PatternRenderer.h">
-      <Filter>Renderer</Filter>
-    </ClInclude>
     <ClInclude Include="LithoExporter.h">
       <Filter>Litho</Filter>
     </ClInclude>
     <ClInclude Include="LithoType.h">
       <Filter>Litho</Filter>
+    </ClInclude>
+    <ClInclude Include="Rasterizer.h">
+      <Filter>Renderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -22,25 +22,25 @@
 class StrokeRenderer
 {
 public:
-	StrokeRenderer() {}
-	StrokeRenderer(float thickness_pixels, float pixel_size) :thickness_pixels_(thickness_pixels), pixel_size_(pixel_size) { Init(); }
+	StrokeRenderer();
 	~StrokeRenderer();
 
 	void Init(float thickness_pixels, float pixel_size);
 
-	void UpdatePolygonsData(litho::LithoSVG& svg, int layer_id);
+	void UpdateLayer(litho::LithoSVG& svg, int layer_id);
 
 	void DrawOffscreen(float anchor_x, float anchor_y, float pixel_size);
 	void DrawOffscreen(float anchor_x, float anchor_y, float pixel_size, std::string name);
 
-	void SetCenter(glm::vec2 center) { center_ = center; }
+	GLuint Raster(float left, float right, float bottom, float top, int rows, int cols);
 
 private:
-	void Init();
+	void CreateGL();
+	void ReSize();
 	void GenerateStrokeVAO();
 	void CreateShader();
 	void CreateFBO();
-	void UpdateShader();
+	void UpdateShader(float left,float right,float bottom,float top);
 	void CalcStrokeQuad(glm::vec2& curr, glm::vec2& last, glm::vec2& next, glm::vec2& intersection_first, glm::vec2& intersection_second, float thickness);
 	void SaveFBO(GLuint fbo, std::string name);
 
@@ -61,8 +61,8 @@ private:
 	glm::vec2 center_ = glm::vec2(0);
 
 
-	int res_x_ = 1000;
-	int res_y_ = 1000;
+	int cols_ = 1000;
+	int rows_ = 1000;
 
 
 };

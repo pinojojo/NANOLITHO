@@ -8,8 +8,10 @@
 #include <GL/wglew.h>
 #include <tchar.h>
 
+#include "LithoExporter.h"
 #include "LithoSVG.h"
 #include "StrokeRenderer.h"
+
 
 
 // =============================================================================
@@ -81,12 +83,20 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	glewInit();
 
 	// Renderer init
-	litho::LithoSVG svg;
-	//svg.LoadSVG("../bin/svg/new.svg");
-	svg.LoadSVGFromStl("../bin/stl/micro-lens.stl", glm::vec3(100, 100, 100));
-	float curr_pixel_size = 100 * 0.0001f;
-	StrokeRenderer stroke(3, curr_pixel_size);
-	stroke.UpdatePolygonsData(svg, 5);
+	//litho::LithoSVG svg;
+	////svg.LoadSVG("../bin/svg/new.svg");
+	//svg.LoadSVGFromStl("../bin/stl/micro-lens.stl", glm::vec3(100, 100, 100));
+	//float curr_pixel_size = 100 * 0.0001f;
+	//StrokeRenderer stroke(3, curr_pixel_size);
+	//stroke.UpdatePolygonsData(svg, 5);
+
+	litho::LithoSetting setting;
+	setting.pixel_size_external = 100;
+	setting.size_external = 1000;
+	setting.stl_path = "../bin/stl/micro-lens.stl";
+	setting.thickness_external = 10;
+	litho::LithoExporter exporter(setting);
+	exporter.ConvertToXML();
 
 	
 	
@@ -119,7 +129,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		std::cout << pixel_id << std::endl;
 		glm::vec2 curr_anchor = glm::vec2(0, 0);
 		
-		stroke.DrawOffscreen(curr_anchor.x, curr_anchor.y, curr_pixel_size, std::to_string(pixel_id++));
+		//stroke.DrawOffscreen(curr_anchor.x, curr_anchor.y, curr_pixel_size, std::to_string(pixel_id++));
 
 	
 		wglMakeCurrent(g_HDCDeviceContext, g_GLRenderContext);
