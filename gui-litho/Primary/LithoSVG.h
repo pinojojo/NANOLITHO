@@ -31,6 +31,8 @@ namespace litho
 		float right;
 		float bottom;
 		float top;
+
+		bool is_hole;
 		
 
 	};

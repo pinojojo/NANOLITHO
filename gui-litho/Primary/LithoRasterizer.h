@@ -20,19 +20,19 @@ public:
 	
 private:
 
-	void InitGL();
+
 
 	
 
 	
-	GLuint  tex_;
-	GLuint  fbo_;
-	Shader* shader_;
+	GLuint  tex_=0;
+	GLuint  fbo_=0;
+	Shader* shader_=NULL;
 
 	
 
 	StrokeRenderer stroke_;
-
+	MaskRenderer mask_;
 
 
 };

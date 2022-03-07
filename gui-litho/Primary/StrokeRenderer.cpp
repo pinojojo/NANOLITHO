@@ -15,13 +15,24 @@ StrokeRenderer::~StrokeRenderer()
 
 void StrokeRenderer::Init(float thickness_pixels, float pixel_size)
 {
-	thickness_pixels_ = thickness_pixels;
+	shell_thickness_ = thickness_pixels;
 	pixel_size_ = pixel_size;
+	CreateGL();
+}
+
+void StrokeRenderer::Init(litho::LithoSetting setting)
+{
+
+	shell_thickness_ = setting.shell_thickness_internal;
+	pixel_size_ = setting.pixel_size_internal;
+	rows_ = setting.block_height;
+	cols_ = setting.strip_width;
 	CreateGL();
 }
 
 void StrokeRenderer::UpdateLayer(litho::LithoSVG& svg, int layer_id)
 {
+	// copy new layer data from svg 
 	if (layer_id<svg.data_.size())
 	{
 		polygons_.clear();
@@ -39,6 +50,8 @@ void StrokeRenderer::UpdateLayer(litho::LithoSVG& svg, int layer_id)
 
 	center_ = svg.GetCenter();
 
+
+	// generate vao
 	if (stroke_vao_)
 	{
 		glDeleteBuffers(1, &stroke_vbo_);
@@ -183,8 +196,10 @@ void StrokeRenderer::ReSize()
 
 void StrokeRenderer::GenerateStrokeVAO()
 {
+	// clear data for new data
 	strokes_data_.clear();
 
+	// generate stroke vertices
 	for (auto& ring : polygons_)
 	{
 		glm::vec2 last_intersection_first;
@@ -215,7 +230,7 @@ void StrokeRenderer::GenerateStrokeVAO()
 				last = *(&pt - 1);
 			}
 
-			CalcStrokeQuad(curr, last, next, intersection_first, intersection_second, thickness_pixels_ * pixel_size_);
+			CalcStrokeQuad(curr, last, next, intersection_first, intersection_second, shell_thickness_);
 			
 			if (&pt != &ring.front())
 			{

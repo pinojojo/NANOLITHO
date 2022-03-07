@@ -96,6 +96,48 @@ void litho::LithoExporter::ConvertToXML()
 	
 }
 
+void litho::LithoExporter::ConvertToPNG(int layer_id)
+{
+	// 1. svg import
+	svg_.LoadSVGFromStl(setting_.stl_path, setting_.size_internal, setting_.along_x, setting_.thickness_internal);
+
+	// 2. layouts generating
+	GenerateAdaptiveLayers();
+
+	// 3. raster
+	rasterizer_.Init(setting_);
+	rasterizer_.UpdateData(svg_, layer_id);
+
+	auto& adaptive_layer = adaptive_layers_[layer_id];
+	
+	if (adaptive_layer.strips.size())
+	{
+		for (auto& strip : adaptive_layer.strips)
+		{
+			for (auto& block:strip.blocks)
+			{
+				float left = block.anchor.x;
+				float right = block.anchor.x+block.width*block.pixel_size;
+				float bottom = block.anchor.y-block.height*block.pixel_size;
+				float top = block.anchor.y;
+				
+				GLuint tex_id=rasterizer_.Raster(left, right, bottom, top, block.width, block.height);
+			
+				std::string file_path = "../bin/output/png/";
+				file_path += "-layer-" + std::to_string(adaptive_layer.id)+
+					"-strip-" + std::to_string(strip.absolute_id) +
+					"-block-" + std::to_string(block.anchor.x) + "," + std::to_string(block.anchor.y)+
+					".png";
+
+				SaveTexture2PNG(tex_id, file_path);
+
+				
+			}
+
+		}
+	}
+}
+
 
 
 void litho::LithoExporter::GenerateAdaptiveLayers()
@@ -196,6 +238,9 @@ void litho::LithoExporter::GenerateBlock(Strip& strip)
 
 void litho::LithoExporter::RasterizeAdaptiveLayer(AdaptiveLayer& adaptive_layer)
 {
+	// update layer data
+
+
 	for  (auto& strip:adaptive_layer.strips)
 	{
 		RasterizeStrip(strip);

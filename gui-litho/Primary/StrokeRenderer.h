@@ -1,4 +1,5 @@
 #pragma once
+#include "LithoType.h"
 #include "LithoSVG.h"
 
 
@@ -26,6 +27,7 @@ public:
 	~StrokeRenderer();
 
 	void Init(float thickness_pixels, float pixel_size);
+	void Init(litho::LithoSetting setting);
 
 	void UpdateLayer(litho::LithoSVG& svg, int layer_id);
 
@@ -41,7 +43,7 @@ private:
 	void CalcStrokeQuad(glm::vec2& curr, glm::vec2& last, glm::vec2& next, glm::vec2& intersection_first, glm::vec2& intersection_second, float thickness);
 	void SaveFBO(GLuint fbo, std::string name);
 
-	float thickness_pixels_;
+	float shell_thickness_;
 	float pixel_size_;
 
 	std::vector<std::vector<glm::vec2>> polygons_;

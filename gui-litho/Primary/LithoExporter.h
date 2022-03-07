@@ -23,6 +23,8 @@ struct Block
 	int width;
 	int height;
 	float pixel_size;
+
+
 };
 
 struct Strip
@@ -61,6 +63,8 @@ namespace litho
 		LithoExporter(LithoSetting& setting);
 
 		void ConvertToXML();
+
+		void ConvertToPNG(int layer_id);
 
 		
 		litho::LithoSVG svg_;
