@@ -154,6 +154,7 @@
     <ClCompile Include="..\inc\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="..\inc\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\inc\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="BlendRenderer.cpp" />
     <ClCompile Include="InfillRenderer.cpp" />
     <ClCompile Include="LithoExporter.cpp" />
     <ClCompile Include="LithoSVG.cpp" />
@@ -164,6 +165,7 @@
     <ClCompile Include="windowless_opengl.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BlendRenderer.h" />
     <ClInclude Include="InfillRenderer.h" />
     <ClInclude Include="LithoExporter.h" />
     <ClInclude Include="LithoSVG.h" />

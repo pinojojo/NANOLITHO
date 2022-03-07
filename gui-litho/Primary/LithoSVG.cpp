@@ -453,6 +453,7 @@ void litho::LithoSVG::Slic3rCLI(string input_path, string output_path, float sca
 	cmd_args += " --layer-height " + std::to_string(thickness);
 	cmd_args += " -o " + output_path;
 
+	std::cout << "cli: " << cmd_args << std::endl;
 
 	PROCESS_INFORMATION pi;
 

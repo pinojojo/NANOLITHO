@@ -69,6 +69,9 @@
     <ClCompile Include="LithoRasterizer.cpp">
       <Filter>Litho</Filter>
     </ClCompile>
+    <ClCompile Include="BlendRenderer.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StrokeRenderer.h">
@@ -94,6 +97,9 @@
     </ClInclude>
     <ClInclude Include="LithoRasterizer.h">
       <Filter>Litho</Filter>
+    </ClInclude>
+    <ClInclude Include="BlendRenderer.h">
+      <Filter>Renderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

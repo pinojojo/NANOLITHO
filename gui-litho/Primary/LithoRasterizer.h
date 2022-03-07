@@ -4,6 +4,7 @@
 #include "InfillRenderer.h"
 #include "MaskRenderer.h"
 #include "StrokeRenderer.h"
+#include "BlendRenderer.h"
 
 class LithoRasterizer
 {
@@ -33,6 +34,7 @@ private:
 	InfillRenderer infill_;
 	StrokeRenderer stroke_;
 	MaskRenderer mask_;
+	BlendRenderer blend_;
 
 
 };

@@ -46,6 +46,39 @@ void litho::LithoExporter::FindPixelAlignedBoundingBox(float pixel_size)
 
 void litho::LithoExporter::SaveTexture2XML(GLuint tex, FILE* xml)
 {
+	glBindTexture(GL_TEXTURE_2D, tex);
+
+	int width, height = 0;
+	int channels = 1;
+	int miplevel = 0;
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, miplevel, GL_TEXTURE_WIDTH, &width);
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, miplevel, GL_TEXTURE_HEIGHT, &height);
+
+	std::vector<GLubyte> pixels(channels * width * height);
+	glGetTextureImage(tex, 0, GL_RED, GL_UNSIGNED_BYTE, height * width * channels, pixels.data());
+
+	// vertical flipping
+	for (int line = 0; line != height / 2; ++line) {
+		std::swap_ranges(pixels.begin() + channels * width * line,
+			pixels.begin() + channels * width * (line + 1),
+			pixels.begin() + channels * width * (height - line - 1));
+	}
+
+	// write to xml
+	for (auto& p:pixels)
+	{
+		if (p > 0) 
+		{
+			fprintf(xml, "f");
+		}
+		else
+		{
+			fprintf(xml, "0");
+		}
+	}
+
+
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 }
 
@@ -54,15 +87,22 @@ void litho::LithoExporter::SaveTexture2PNG(GLuint tex, std::string png_path)
 	glBindTexture(GL_TEXTURE_2D,tex);
 
 	int width, height = 0;
-	int channels = 4;
+	int channels = 1;
 	int miplevel = 0;
 	glGetTexLevelParameteriv(GL_TEXTURE_2D, miplevel, GL_TEXTURE_WIDTH, &width);
 	glGetTexLevelParameteriv(GL_TEXTURE_2D, miplevel, GL_TEXTURE_HEIGHT, &height);
 
-	GLubyte* pixels = new GLubyte[width * height * channels];
-	glGetTextureImage(tex, 0, GL_RGBA, GL_UNSIGNED_BYTE, height * width * channels, pixels);
+	std::vector<GLubyte> pixels(channels * width * height);
+	glGetTextureImage(tex, 0, GL_RED, GL_UNSIGNED_BYTE, height * width * channels, pixels.data());
 
-	stbi_write_png(png_path.c_str(), width, height, 4, pixels, width * channels);
+	// vertical flipping
+	for (int line = 0; line != height / 2; ++line) {
+		std::swap_ranges(pixels.begin() + channels * width * line,
+			pixels.begin() + channels * width * (line + 1),
+			pixels.begin() + channels * width * (height - line - 1));
+	}
+
+	stbi_write_png(png_path.c_str(), width, height, channels, pixels.data(), width * channels);
 	
 	glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -89,6 +129,8 @@ void litho::LithoExporter::ConvertToXML()
 	for (auto& layer:adaptive_layers_)
 	{
 		RasterizeAdaptiveLayer(layer);
+
+		std::cout << "layer raster: " << layer.id << std::endl;
 	}
 	
 	
@@ -98,10 +140,10 @@ void litho::LithoExporter::ConvertToXML()
 
 void litho::LithoExporter::ConvertToPNG(int layer_id)
 {
-	// 1. svg import
+	// 1. svg
 	svg_.LoadSVGFromStl(setting_.stl_path, setting_.size_internal, setting_.along_x, setting_.thickness_internal);
 
-	// 2. layouts generating
+	// 2. layouts
 	GenerateAdaptiveLayers();
 
 	// 3. raster
@@ -236,7 +278,7 @@ void litho::LithoExporter::GenerateBlock(Strip& strip)
 void litho::LithoExporter::RasterizeAdaptiveLayer(AdaptiveLayer& adaptive_layer)
 {
 	// update layer data
-
+	rasterizer_.UpdateData(svg_, adaptive_layer.id);
 
 	for  (auto& strip:adaptive_layer.strips)
 	{
@@ -294,7 +336,7 @@ void litho::LithoExporter::RasterizeBlock(Block& block, FILE* file)
 
 		GLuint tex_id = rasterizer_.Raster(left, right, bottom, top, block.height, block.width);
 
-		
+		SaveTexture2XML(tex_id, file);
 
 	}
 }
