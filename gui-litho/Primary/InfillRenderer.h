@@ -1,5 +1,6 @@
 #pragma once
 #define GLM_FORCE_RADIANS
+#include "LithoType.h"
 #include <GL/glew.h>
 #include <gl/GL.h>
 
@@ -23,49 +24,38 @@ class InfillRenderer
 {
 public:
 	InfillRenderer() {}
-	InfillRenderer(float spacing_pixels) :spacing_pixels_(spacing_pixels) { Init(); }
-	InfillRenderer(float spacing_pixels, float filling_rate) :spacing_pixels_(spacing_pixels), filling_rate_(filling_rate) { Init(); }
 	~InfillRenderer();
 
-	void Init(float spacing_pixels, float filling_rate);
+	void Init(litho::LithoSetting setting);
 
-	void Draw(float anchor_x, float anchor_y, float pixel_size);
-	void DrawOffscreen(float anchor_x, float anchor_y, float pixel_size, std::string name);
-	void DrawOffscreen(float anchor_x, float anchor_y, float pixel_size);
-
+	GLuint Raster(float left, float right, float bottom, float top, int rows, int cols);
 
 private:
-	void Init();
-	void Resize(int res_x,int res_y);  //NOTE: resizing ops always very time-consuming, so take attention to use this function.
-	void UpdateVAO();
-	void MakeShader();
+	void CreateShader();
 	void UpdateShader();
+	void CreateVAO(float left, float right, float bottom, float top);
 	void CreateFBO();
-	void SaveFBO(GLuint fbo,std::string name);
 
-	int    res_x_ = 1000, res_y_ = 1000;
-	GLuint infill_fbo_;
-	GLuint infill_tex_=0;
-	GLuint infill_vao_=0;
-	GLuint infill_vbo_=0;
-	Shader* infill_shader_;
+	int cols_ = 1000;
+	int rows_ = 1000;
+
+	Shader* shader_;
+	GLuint vao_=0;
+	GLuint vbo_=0;
+	GLuint fbo_;
+	GLuint tex_;
+	float spacing_;
+	float fill_ratio_;
 	glm::mat4 mvp_;
 
-	
+	float left_;
+	float right_;
+	float bottom_;
+	float top_;
+
 	float pixel_size_;
-	float spacing_; 
-	float spacing_pixels_;//number of pixels
-	float filling_rate_ = 1.0;
-	PatternMode pattern_mode_ = square;
-	float anchor_x_;
-	float anchor_y_;
 
-	int indices_number_;
-
-
-
-
-
+	std::vector<glm::vec2> infill_vertices_;
 	
 };
 

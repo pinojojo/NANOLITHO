@@ -20,6 +20,9 @@ namespace litho
 		float size_external;			// micrometer
 		float thickness_external;		// micrometer
 		float shell_thickness_external = 1;    // pixels
+		float infill_grid_spacing_external = 3;// pixels
+		float infill_rate = 1;// 100% infilling by default
+		
 
 		// internal
 		float micrometer_internal = 1.f; // means 1mm in real world equals to X in data value.
@@ -27,6 +30,7 @@ namespace litho
 		float size_internal;
 		float thickness_internal;
 		float shell_thickness_internal;
+		float infill_grid_spacing_internal;
 
 
 		void GetInternal()
@@ -35,6 +39,7 @@ namespace litho
 			size_internal = size_external * micrometer_internal;
 			thickness_internal = thickness_external * micrometer_internal;
 			shell_thickness_internal = shell_thickness_external * pixel_size_internal;
+			infill_grid_spacing_internal = infill_grid_spacing_external * pixel_size_external;
 
 			std::cout
 				<<"internal para: "
