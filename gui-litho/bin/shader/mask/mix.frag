@@ -26,7 +26,7 @@ void main()
         }
         else
         {
-            final_val=val_contour;
+            final_val=val_contour.r;
         }
     }
 

@@ -332,7 +332,18 @@ void litho::LithoSVG::ParsePolygon(Polygon& polygon)
 			if (endedPos != std::string::npos)
 			{
 				string type_string = polygon.polygon_string.substr(pointsPos + toSearch.size(), endedPos - (pointsPos + toSearch.size()));
+				
 				polygon.type = type_string;
+				if (type_string=="contour")
+				{
+					polygon.is_hole = false;
+				}
+				if (type_string == "hole")
+				{
+					polygon.is_hole = true;
+
+				}
+
 			}
 		}
 	}

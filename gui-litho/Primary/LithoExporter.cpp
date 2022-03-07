@@ -130,10 +130,7 @@ void litho::LithoExporter::ConvertToPNG(int layer_id)
 					".png";
 
 				SaveTexture2PNG(tex_id, file_path);
-
-				
 			}
-
 		}
 	}
 }

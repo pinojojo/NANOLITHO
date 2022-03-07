@@ -26,6 +26,19 @@
 #include <array>
 #include <algorithm>
 
+namespace ear 
+{
+	using Coord = float;
+	using N = unsigned int;
+	using Point = std::array<Coord, 2>;
+}
+
+struct EarcutPolygon
+{
+	std::vector<std::vector<ear::Point>> polygons;// why vector of vector? cause earcut only accept this
+	std::vector<ear::N> indices;
+	bool is_hole;
+};
 
 struct DrawablePolygon
 {
@@ -45,18 +58,11 @@ struct DrawablePolygon
 		glDeleteVertexArrays(1, &vao);
 
 	}
-	
-	
 };
 
 class MaskRenderer
 {
 public:
-	using Coord = float;
-	using N = unsigned int;
-	using Point = std::array<Coord, 2>;
-
-
 	MaskRenderer() {}
 
 	void Init(litho::LithoSetting setting);
@@ -65,9 +71,7 @@ public:
 
 	GLuint Raster(float left, float right, float bottom, float top, int rows, int cols);
 
-	std::vector<std::vector<Point>> ear_polygons;
-	std::vector<N> ear_indices;
-	std::vector<bool> ear_is_hole;
+	std::vector<EarcutPolygon> earcut_polygons_;
 	std::vector<DrawablePolygon> drawable_polygons_;
 
 private:

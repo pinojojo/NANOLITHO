@@ -13,49 +13,59 @@ void MaskRenderer::Init(litho::LithoSetting setting)
 
 void MaskRenderer::UpdateLayer(litho::LithoSVG& svg, int layer_id)
 {
-
+	using namespace ear;
 	// 1. get layer
 	auto& layer = svg.data_[layer_id];
 
-	ear_polygons.clear();
+	earcut_polygons_.clear();
 	// 2. copy layer to earcut data
 	for (auto& polygon : layer.polygons)
 	{
-		std::vector<Point> curr_earcut_polygon;
-		curr_earcut_polygon.clear();
+		EarcutPolygon curr_e_polygon;
+		std::vector<Point> curr_polygon;
 		for (auto& point : polygon.points)
 		{
 			Point curr_point;
 			curr_point[0] = point.x;
-			curr_point[1] = point.x;
-			curr_earcut_polygon.push_back(curr_point);
+			curr_point[1] = point.y;
+			curr_polygon.push_back(curr_point);
 		}
 
-		ear_is_hole.push_back(polygon.is_hole);
-		ear_polygons.push_back(curr_earcut_polygon);
+
+		curr_e_polygon.polygons.push_back(curr_polygon);
+		curr_e_polygon.is_hole = polygon.is_hole;
+		
+		earcut_polygons_.push_back(curr_e_polygon);
 	}
 
 	// 3. use earcut to triangulation
-	ear_indices.clear();
-	ear_indices = mapbox::earcut<N>(ear_polygons);// earcut only accept vector of vector of point
-		
+	for (auto& e_polygon:earcut_polygons_)
+	{
+		e_polygon.indices = mapbox::earcut<N>(e_polygon.polygons);
+	}
 	
-
 	// 4. convert to drawalble data
 	drawable_polygons_.clear();
-	int ear_polygon_id = 0;
-	for (auto& e_polygon : ear_polygons)
+	for (auto& e_polygon : earcut_polygons_)
 	{
 		DrawablePolygon curr_d_polygon;
-		curr_d_polygon.is_hole = ear_is_hole[ear_polygon_id];
 
-		for (auto& p : e_polygon)
+		// polygon type
+		curr_d_polygon.is_hole = e_polygon.is_hole;
+
+		// point data
+		for (auto& p : e_polygon.polygons[0])
 		{
 			curr_d_polygon.points.push_back(glm::vec2(p[0], p[1]));
 		}
-		drawable_polygons_.push_back(curr_d_polygon);
+		 
+		// index data
+		for (auto& index:e_polygon.indices)
+		{
+			curr_d_polygon.indices.push_back((unsigned int)index);
+		}
 
-		ear_polygon_id++;
+		drawable_polygons_.push_back(curr_d_polygon);
 	}
 
 	// 5. make vao
@@ -119,14 +129,14 @@ void MaskRenderer::DrawPolygon(DrawablePolygon& drawable_polygon, bool clear)
 	if (drawable_polygon.is_hole)
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, fbo_);
-		glBindTexture(1, hole_tex_);
+		glBindTexture(GL_TEXTURE_2D, hole_tex_);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, hole_tex_, 0);	// we only need a color buffer
 		glViewport(0, 0, cols_, rows_);
 	}
 	else
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, fbo_);
-		glBindTexture(1, contour_tex_);
+		glBindTexture(GL_TEXTURE_2D, contour_tex_);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, contour_tex_, 0);	// we only need a color buffer
 		glViewport(0, 0, cols_, rows_);
 	}
@@ -149,16 +159,40 @@ void MaskRenderer::DrawPolygon(DrawablePolygon& drawable_polygon, bool clear)
 
 	glBindVertexArray(0);
 	glUseProgram(0);
-
-
-
-
-
 }
 
 void MaskRenderer::DrawMix(GLuint contour, GLuint hole)
 {
+	// bind fbo
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo_);
+	glBindTexture(GL_TEXTURE_2D, mask_tex_);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mask_tex_, 0);	// we only need a color buffer
+	glViewport(0, 0, cols_, rows_);
 
+	// clear
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glDisable(GL_DEPTH_TEST);
+
+	// bind quad vao
+	glBindVertexArray(quad_vao_);
+
+	// bind & update shader 
+	mix_shader_->use();
+	mix_shader_->bindTextureUnit("contour_tex", 0);
+	mix_shader_->bindTextureUnit("hole_tex", 1);
+
+	// active & bind texture
+	glActiveTexture(GL_TEXTURE0 + 0); glBindTexture(GL_TEXTURE_2D, contour);
+	glActiveTexture(GL_TEXTURE0 + 1); glBindTexture(GL_TEXTURE_2D, hole);
+
+	// draw call
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	// unbind 
+	glBindVertexArray(0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void MaskRenderer::Resize()
@@ -242,7 +276,7 @@ void MaskRenderer::CreateFBO()
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, contour_tex_, 0);	// we only need a color buffer
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		std::cout << "ERROR::FRAMEBUFFER:: infill framebuffer is not complete!" << std::endl;
+		std::cout << "ERROR::FRAMEBUFFER:: framebuffer is not complete!" << std::endl;
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 }
