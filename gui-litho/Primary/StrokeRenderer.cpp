@@ -53,12 +53,6 @@ void StrokeRenderer::UpdateLayer(litho::LithoSVG& svg, int layer_id)
 
 }
 
-// Use coordinate system for print space
-void StrokeRenderer::DrawOffscreen(float anchor_x, float anchor_y, float pixel_size, std::string name)
-{
-	DrawOffscreen(anchor_x, anchor_y, pixel_size);
-	SaveFBO(stroke_fbo_, name);
-}
 
 GLuint StrokeRenderer::Raster(float left, float right, float bottom, float top, int rows, int cols)
 {

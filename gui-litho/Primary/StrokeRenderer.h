@@ -29,9 +29,6 @@ public:
 
 	void UpdateLayer(litho::LithoSVG& svg, int layer_id);
 
-	void DrawOffscreen(float anchor_x, float anchor_y, float pixel_size);
-	void DrawOffscreen(float anchor_x, float anchor_y, float pixel_size, std::string name);
-
 	GLuint Raster(float left, float right, float bottom, float top, int rows, int cols);
 
 private:

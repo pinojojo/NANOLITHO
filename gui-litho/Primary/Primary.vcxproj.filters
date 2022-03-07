@@ -66,8 +66,8 @@
     <ClCompile Include="LithoExporter.cpp">
       <Filter>Litho</Filter>
     </ClCompile>
-    <ClCompile Include="Rasterizer.cpp">
-      <Filter>Renderer</Filter>
+    <ClCompile Include="LithoRasterizer.cpp">
+      <Filter>Litho</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -92,8 +92,8 @@
     <ClInclude Include="LithoType.h">
       <Filter>Litho</Filter>
     </ClInclude>
-    <ClInclude Include="Rasterizer.h">
-      <Filter>Renderer</Filter>
+    <ClInclude Include="LithoRasterizer.h">
+      <Filter>Litho</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

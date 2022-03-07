@@ -6,6 +6,7 @@
 
 #include "LithoType.h"
 #include "LithoSVG.h"
+#include "LithoRasterizer.h"
 
 
 #include <glm/glm.hpp>
@@ -61,6 +62,8 @@ namespace litho
 
 		void ConvertToXML();
 
+		
+		litho::LithoSVG svg_;
 	private:
 	
 
@@ -68,15 +71,21 @@ namespace litho
 		void GenerateStrips(AdaptiveLayer& adaptive_layer);
 		void GenerateBlock(Strip& strip);
 
-		void RasterizeStrip();
-		void RasterizeBlock(Block block);
+		void RasterizeAdaptiveLayer(AdaptiveLayer& adaptive_layer);
+		void RasterizeStrip(Strip& strip);
+		void RasterizeBlock(Block& block,FILE* file);
 
 		void FindPixelAlignedBoundingBox(float pixel_size);
 
+		void SaveTexture2XML(GLuint tex,FILE* xml);
+		
+		void SaveTexture2PNG(GLuint tex, std::string png_path);
 		
 		
 
-		litho::LithoSVG svg_;
+		
+		LithoRasterizer rasterizer_;
+		
 
 		std::vector<AdaptiveLayer> adaptive_layers_;
 		LithoSetting setting_;
