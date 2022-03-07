@@ -23,7 +23,7 @@ enum PatternMode {
 class InfillRenderer
 {
 public:
-	InfillRenderer() {}
+	InfillRenderer();
 	~InfillRenderer();
 
 	void Init(litho::LithoSetting setting);

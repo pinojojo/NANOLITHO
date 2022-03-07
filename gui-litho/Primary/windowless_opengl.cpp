@@ -91,11 +91,12 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	//stroke.UpdatePolygonsData(svg, 5);
 
 	litho::LithoSetting setting;
-	setting.pixel_size_external = 1000;//nm
+	setting.pixel_size_external = 100;//nm
 	setting.size_external = 1000;//um
 	setting.stl_path = "../bin/stl/micro-lens.stl";
 	setting.xml_path = "../bin/output/xml/";
 	setting.thickness_external = 10;//um
+	setting.infill_grid_spacing_external = 12;
 	setting.shell_thickness_external = 5;
 	litho::LithoExporter exporter(setting);
 	//exporter.ConvertToXML();

@@ -1,10 +1,21 @@
 #include "InfillRenderer.h"
 
+InfillRenderer::InfillRenderer()
+{
+}
+
+InfillRenderer::~InfillRenderer()
+{
+}
+
 void InfillRenderer::Init(litho::LithoSetting setting)
 {
 	spacing_ = setting.infill_grid_spacing_internal;
 	fill_ratio_ = setting.infill_rate;
 	pixel_size_ = setting.pixel_size_internal;
+
+	CreateFBO();
+	CreateShader();
 }
 
 GLuint InfillRenderer::Raster(float left, float right, float bottom, float top, int rows, int cols)
@@ -14,7 +25,9 @@ GLuint InfillRenderer::Raster(float left, float right, float bottom, float top, 
 	bottom_ = bottom;
 	top_ = top;
 
-	CreateVAO(left, right, bottom, right);
+	// create vao
+	CreateVAO(left, right, bottom, top);
+
 	// resize 
 	if ((rows != rows_) || (cols != cols_))
 	{
@@ -65,6 +78,8 @@ void InfillRenderer::CreateVAO(float left, float right, float bottom, float top)
 	float size_x = right - left;
 	float size_y = top - bottom;
 
+	//std::cout << "a: " << size_x << " b: " << size_y << std::endl;
+
 	float pattern_left = left - size_x * 0.4;
 	float pattern_right = right + size_x * 0.4;
 	float pattern_bottom = bottom - size_y * 0.4;
@@ -100,7 +115,7 @@ void InfillRenderer::CreateVAO(float left, float right, float bottom, float top)
 		quad[0] = glm::vec2(pattern_left, line_id_y * spacing_);
 		quad[1] = glm::vec2(pattern_right, line_id_y * spacing_);
 		quad[2] = glm::vec2(pattern_right, line_id_y * spacing_ + spacing_ * fill_ratio_);
-		quad[3] = glm::vec2(pattern_top, line_id_y * spacing_ + spacing_ * fill_ratio_);
+		quad[3] = glm::vec2(pattern_left, line_id_y * spacing_ + spacing_ * fill_ratio_);
 		for (size_t i = 0; i < 4; i++)
 		{
 			infill_vertices_.push_back(quad[i]);

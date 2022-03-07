@@ -30,7 +30,7 @@ private:
 	Shader* shader_=NULL;
 
 	
-
+	InfillRenderer infill_;
 	StrokeRenderer stroke_;
 	MaskRenderer mask_;
 
