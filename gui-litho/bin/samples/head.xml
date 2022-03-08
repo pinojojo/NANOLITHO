@@ -1,4 +1,0 @@
-<Head>
-  <View MaxSingleWidth="500" MaxSingleHeight="100" Num="1461" TotalMinX="-250100" TotalMaxY="250100" TotalXSize="500200" TotalYSize="500200" TotalZSize="191500" />
-  <Grave ExcitationPower="50" SuppressedPower="50" WriteSpeed="10000" WriteMode="GalvoMode" WriteChannel="[0,0]" BiDirection="False" SlicingSize="500" PixelSize="100" JointSize="0" IsGray="False" />
-</Head>

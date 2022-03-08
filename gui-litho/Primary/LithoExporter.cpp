@@ -109,6 +109,26 @@ void litho::LithoExporter::SaveTexture2PNG(GLuint tex, std::string png_path)
 
 }
 
+glm::vec3 litho::LithoExporter::GetExternalPosition(Strip& strip)
+{
+	glm::vec3 ret,tmp;
+	glm::vec2 position_to_center = strip.anchor - svg_.center_;
+	tmp.x = position_to_center.x;
+	tmp.y = position_to_center.y;
+	tmp.z = strip.z_value;
+
+	int pixel_number[3];
+	pixel_number[0] = ceil(tmp.x / setting_.pixel_size_internal);
+	pixel_number[1] = ceil(tmp.y / setting_.pixel_size_internal);
+	pixel_number[2] = ceil(tmp.z / setting_.pixel_size_internal);
+
+	// convert pixel number to nm
+	ret.x = pixel_number[0] * setting_.pixel_size_external;
+	ret.y = pixel_number[1] * setting_.pixel_size_external;
+	ret.z = pixel_number[2] * setting_.pixel_size_external;
+	return ret;
+}
+
 litho::LithoExporter::LithoExporter(LithoSetting& setting)
 {
 	// setting
@@ -133,6 +153,7 @@ void litho::LithoExporter::ConvertToXML()
 		std::cout << "layer raster: " << layer.id << std::endl;
 	}
 	
+	// 4. generate head.xml
 	
 	
 	
@@ -198,6 +219,7 @@ void litho::LithoExporter::GenerateAdaptiveLayers()
 		curr_layer.cols = layer.pixel_num_x;
 		curr_layer.rows = layer.pixel_num_y;
 		curr_layer.hatch_distance = 100;
+		curr_layer.z_value = layer.z_value;
 
 		GenerateStrips(curr_layer);
 
@@ -248,7 +270,7 @@ void litho::LithoExporter::GenerateStrips(AdaptiveLayer& adaptive_layer)
 		curr_strip.anchor = adaptive_layer.position + glm::vec2(strip_id * setting_.strip_width * setting_.pixel_size_internal, 0);
 		curr_strip.width = setting_.strip_width;
 		curr_strip.height = adaptive_layer.rows;
-
+		curr_strip.z_value = adaptive_layer.z_value;
 		
 
 		GenerateBlock(curr_strip);
@@ -301,7 +323,7 @@ void litho::LithoExporter::RasterizeStrip(Strip& strip)
 	else
 	{
 		fprintf(xml_file, "<Data>\n");
-		std::string matrix_id_string = " <data Matrix_ID=\"" + std::to_string(strip.absolute_id) + "\" Matrix=\"";
+		std::string matrix_id_string = "  <data Matrix_ID=\"" + std::to_string(strip.absolute_id) + "\" Matrix=\"";
 		fprintf(xml_file, matrix_id_string.c_str());
 
 		int strip_rows = 0;
@@ -316,6 +338,16 @@ void litho::LithoExporter::RasterizeStrip(Strip& strip)
 		data_tail += "\"" + std::to_string(strip_rows) + "\"";
 		data_tail += " Col=";
 		data_tail += "\"" + std::to_string(strip.width) + "\"";
+		data_tail += " Hatch_Distance=\"";
+		data_tail += std::to_string((int)setting_.pixel_size_external) + "\"";
+
+		glm::vec3 strip_position = GetExternalPosition(strip);
+		
+		data_tail += " Position=\"(";
+		data_tail += std::to_string(int(strip_position.x)) + ",";
+		data_tail += std::to_string(int(strip_position.y)) + ",";
+		data_tail += std::to_string(int(strip_position.z));
+		data_tail += ")\"";
 		data_tail += " />";
 		data_tail += "\n";
 		fprintf(xml_file, data_tail.c_str());

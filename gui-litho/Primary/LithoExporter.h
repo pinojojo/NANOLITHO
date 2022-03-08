@@ -37,6 +37,8 @@ struct Strip
 	int height;
 	float pixel_size;
 	float hatch_distance;
+
+	int z_value;
 	
 };
 
@@ -48,6 +50,7 @@ struct AdaptiveLayer
 	std::vector<Strip> strips;
 	glm::vec2 position;
 	float hatch_distance;
+	float z_value;
 
 	
 };
@@ -85,8 +88,9 @@ namespace litho
 		
 		void SaveTexture2PNG(GLuint tex, std::string png_path);
 		
+		glm::vec3 GetExternalPosition(Strip& strip);
 		
-
+		
 		
 		LithoRasterizer rasterizer_;
 		

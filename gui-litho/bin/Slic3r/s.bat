@@ -1,1 +1,1 @@
-.\Slic3r-console.exe --export-svg micro-lens.stl --scale 300% --layer-height 0.1 -o new.svg
+.\Slic3r-console.exe --export-svg micro-lens.stl --scale 200.0 --layer-height 0.1 -o new.svg

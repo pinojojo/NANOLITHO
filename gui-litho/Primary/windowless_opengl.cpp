@@ -91,11 +91,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	//stroke.UpdatePolygonsData(svg, 5);
 
 	litho::LithoSetting setting;
-	setting.pixel_size_external = 500;//nm
+	setting.pixel_size_external = 1000;//nm
 	setting.size_external = 1000;//um
 	setting.stl_path = "../bin/stl/micro-lens.stl";
 	setting.xml_path = "../bin/output/xml/";
-	setting.thickness_external = 3;//um
+	setting.thickness_external = 1;//um
 	setting.infill_grid_spacing_external = 12;
 	setting.shell_thickness_external = 10;
 	setting.infill_rate = 0.3;

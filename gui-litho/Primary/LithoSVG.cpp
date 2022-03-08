@@ -22,7 +22,6 @@ void litho::LithoSVG::LoadSVGFromStl(string stl_path, glm::vec3 bounding_box)
 
 	glm::vec3 new_box = box * scaling_value;
 
-
 	// slic3r
 	Slic3rCLI("../bin/stl/micro-s", "../bin/output/ooo.svg", scaling_value, new_box.z / 100.f);
 
@@ -198,7 +197,9 @@ void litho::LithoSVG::ParseLayer(Layer& layer)
 	{
 		if (int namePosEnd = layer.layer_string.find("\"", namePosStart + 3))
 		{
-			layer.z_value = std::stof(layer.layer_string.substr(namePosStart + 3, namePosEnd - namePosStart - 3));
+			layer.z_value = 1e6*std::stof(layer.layer_string.substr(namePosStart + 3, namePosEnd - namePosStart - 3));
+			
+		
 		}
 	}
 
@@ -446,6 +447,15 @@ void litho::LithoSVG::GetEachLayerBoundingBox()
 
 void litho::LithoSVG::Slic3rCLI(string input_path, string output_path, float scale, float thickness)
 {
+	/*
+	
+	Note that there is a restriction on the parameter: --layer-height
+	
+	reference: https://github.com/slic3r/Slic3r/issues/5097
+
+	*/
+
+
 	std::string cmd_args = "Slic3r-console.exe";
 	cmd_args += " --export-svg";
 	cmd_args += " " + input_path;

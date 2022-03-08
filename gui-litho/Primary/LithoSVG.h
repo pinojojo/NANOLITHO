@@ -64,8 +64,6 @@ namespace litho
 	{
 
 	public:
-		
-
 		// resize along one direction
 		void LoadSVGFromStl(string stl_path, float size, bool along_x, float thickness);;
 		// resize to a bounding box
