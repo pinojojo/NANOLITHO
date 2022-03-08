@@ -82,26 +82,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	SetSwapInterval(1);
 	glewInit();
 
-	// Renderer init
-	//litho::LithoSVG svg;
-	////svg.LoadSVG("../bin/svg/new.svg");
-	//svg.LoadSVGFromStl("../bin/stl/micro-lens.stl", glm::vec3(100, 100, 100));
-	//float curr_pixel_size = 100 * 0.0001f;
-	//StrokeRenderer stroke(3, curr_pixel_size);
-	//stroke.UpdatePolygonsData(svg, 5);
 
-	litho::LithoSetting setting;
-	setting.pixel_size_external = 1000;//nm
-	setting.size_external = 1000;//um
-	setting.stl_path = "../bin/stl/micro-lens.stl";
-	setting.xml_path = "../bin/output/xml/";
-	setting.thickness_external = 1;//um
-	setting.infill_grid_spacing_external = 12;
-	setting.shell_thickness_external = 10;
-	setting.infill_rate = 0.3;
-	litho::LithoExporter exporter(setting);
+	litho::LithoExporter exporter("../bin/json/config.json");
 	exporter.ConvertToXML();
-	//exporter.ConvertToPNG(28);
 
 	
 
@@ -110,7 +93,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	ZeroMemory(&msg, sizeof(msg));
 	
 	int pixel_id = 0;
-	while (msg.message != WM_QUIT)
+	bool looping=false;
+	while ((msg.message != WM_QUIT)&&looping)
 	{
 		// Poll and handle messages (inputs, window resize, etc.)
 		// You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
@@ -132,6 +116,12 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		// render
 		std::cout << pixel_id << std::endl;
 		glm::vec2 curr_anchor = glm::vec2(0, 0);
+
+		if (pixel_id>0)
+		{
+			break;
+
+		}
 		
 		//stroke.DrawOffscreen(curr_anchor.x, curr_anchor.y, curr_pixel_size, std::to_string(pixel_id++));
 

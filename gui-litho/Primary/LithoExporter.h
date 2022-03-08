@@ -65,6 +65,8 @@ namespace litho
 	public:
 		LithoExporter(LithoSetting& setting);
 
+		LithoExporter(std::string json_file);
+			
 		void ConvertToXML();
 
 		void ConvertToPNG(int layer_id);
@@ -91,8 +93,9 @@ namespace litho
 		glm::vec3 GetExternalPosition(Strip& strip);
 
 		void GetSingleStripMaxSizeMicron(glm::vec2& single_max_size);
-		void GetTotalBoundingBoxNono(glm::vec2& upper_left, glm::vec3& box_size);
-		
+		void GetTotalBoundingBoxNano(glm::vec2& upper_left, glm::vec3& box_size);
+		int GetAllStripNum();
+
 		void GenerateHeadXML();
 		
 		LithoRasterizer rasterizer_;

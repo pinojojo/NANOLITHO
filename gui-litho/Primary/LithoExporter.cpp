@@ -4,6 +4,8 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
 
+#include <nlohmann/json.hpp>
+
 
 
 
@@ -149,10 +151,13 @@ void litho::LithoExporter::GetSingleStripMaxSizeMicron(glm::vec2& single_max_siz
 		}
 	}
 
+	// convert pixel number to um
 	largest = largest * setting_.pixel_size_external;
+	largest *= 0.001;
+	single_max_size = largest;
 }
 
-void litho::LithoExporter::GetTotalBoundingBoxNono(glm::vec2& upper_left, glm::vec3& box_size)
+void litho::LithoExporter::GetTotalBoundingBoxNano(glm::vec2& upper_left, glm::vec3& box_size)
 {
 	glm::vec2 bottom_left = svg_.GetBottomLeft();
 	glm::vec2 upper_right = svg_.GetUpperRight();
@@ -172,10 +177,31 @@ void litho::LithoExporter::GetTotalBoundingBoxNono(glm::vec2& upper_left, glm::v
 	svg_.GetMinMaxZ(z_min, z_max);
 	_box_size.z = z_max - z_min;
 
-	// convert to nanometer
+	// convert to pixel number
+	_upper_left.x = ceil(_upper_left.x / setting_.pixel_size_internal);
+	_upper_left.y = ceil(_upper_left.y / setting_.pixel_size_internal);
 	
+	_box_size.x = ceil(_box_size.x / setting_.pixel_size_internal);
+	_box_size.y = ceil(_box_size.y / setting_.pixel_size_internal);
+	_box_size.z = ceil(_box_size.z / setting_.pixel_size_internal);
 
+	// convert to nanometer
+	upper_left = _upper_left * setting_.pixel_size_external;
+	box_size = _box_size * setting_.pixel_size_external;
 
+}
+
+int litho::LithoExporter::GetAllStripNum()
+{
+	int strip_num = 0;
+	for (auto& a_layer:adaptive_layers_)
+	{
+		for (auto& strip : a_layer.strips)
+		{
+			strip_num++;
+		}
+	}
+	return strip_num;
 }
 
 void litho::LithoExporter::GenerateHeadXML()
@@ -187,21 +213,34 @@ void litho::LithoExporter::GenerateHeadXML()
 	xml_file = fopen(save_path.c_str(), "w");
 	if (!xml_file)
 	{
-		std::cout << "ERROR: xml path creating failed ! " << std::endl;
+		std::cout << "ERROR: head xml creating failed ! " << std::endl;
 	}
 	else
 	{
 		fprintf(xml_file, "<Head>\n");
 
 		std::string view_string;
+
+		glm::vec2 max_single;
+		GetSingleStripMaxSizeMicron(max_single);
+		glm::vec2 upper_left; glm::vec3 bbox;
+		GetTotalBoundingBoxNano(upper_left, bbox);
+
 		
 		view_string += "View ";
-		view_string += "MaxSingleWidth = \"" + std::to_string(int(1e-3*(setting_.strip_width*setting_.pixel_size_external))) + "\" ";
-		view_string += "MaxSingleHeight = \"" + std::to_string(int(1e-3*(setting_.strip_width*setting_.pixel_size_external))) + "\" ";
+		view_string += "MaxSingleWidth=\"" + std::to_string(int(max_single.x)) + "\" ";
+		view_string += "MaxSingleHeight=\"" + std::to_string(int(max_single.y)) + "\" ";
+		view_string += "Num=\"" + std::to_string(int(GetAllStripNum())) + "\" ";
+		view_string += "TotalMinX=\"" + std::to_string(int(upper_left.x)) + "\" ";
+		view_string += "TotalMaxY=\"" + std::to_string(int(upper_left.y)) + "\" ";
 
+		view_string += "TotalXSize=\"" + std::to_string(int(bbox.x)) + "\" ";
+		view_string += "TotalYSize=\"" + std::to_string(int(bbox.y)) + "\" ";
+		view_string += "TotalZSize=\"" + std::to_string(int(bbox.z)) + "\" />\n";
 
+		fprintf(xml_file, view_string.c_str());
 
-		std::string grave_string = "<Grave ExcitationPower=\"50\" SuppressedPower=\"50\" WriteSpeed=\"10000\" WriteMode=\"GalvoMode\" WriteChannel=\"[0, 0]\" BiDirection=\"False\" SlicingSize=\"500\" PixelSize=\"" + std::to_string((int)setting_.pixel_size_external) + "\" JointSize=\"0\" IsGray=\"False\" />";
+		std::string grave_string = "<Grave ExcitationPower=\"50\" SuppressedPower=\"50\" WriteSpeed=\"10000\" WriteMode=\"GalvoMode\" WriteChannel=\"[0, 0]\" BiDirection=\"False\" SlicingSize=\"500\" PixelSize=\"" + std::to_string((int)setting_.pixel_size_external) + "\" JointSize=\"0\" IsGray=\"False\" />\n";
 
 		fprintf(xml_file, grave_string.c_str());
 
@@ -218,6 +257,34 @@ void litho::LithoExporter::GenerateHeadXML()
 litho::LithoExporter::LithoExporter(LithoSetting& setting)
 {
 	// setting
+	setting_ = setting;
+	setting_.GetInternal();
+}
+
+litho::LithoExporter::LithoExporter(std::string json_file)
+{
+	// read json
+	std::ifstream i(json_file.c_str());
+	nlohmann::json j;
+	if (i)
+	{
+		i >> j;
+	}
+
+	litho::LithoSetting setting;
+	
+	setting.stl_path = j["stl_path"];
+	setting.xml_path = j["xml_path"];
+	setting.along_x = j["along_x"];
+	setting.pixel_size_external = j["pixel_size"];
+	setting.thickness_external = j["layer_height"];
+	setting.size_external = j["size"];
+	setting.shell_thickness_external = j["shell_thickness"];
+	setting.infill_grid_spacing_external = j["infill_spacing"];
+	setting.infill_rate = j["infill_rate"];
+	setting.strip_width = j["x_limit"];
+	setting.block_height = j["x_limit"];
+
 	setting_ = setting;
 	setting_.GetInternal();
 }
@@ -240,7 +307,7 @@ void litho::LithoExporter::ConvertToXML()
 	}
 	
 	// 4. generate head.xml
-	
+	GenerateHeadXML();
 	
 	
 }
@@ -441,6 +508,8 @@ void litho::LithoExporter::RasterizeStrip(Strip& strip)
 		fprintf(xml_file, "</Data>\n");
 		fclose(xml_file);
 	}
+
+	std::cout << "---finished strip: " << strip.absolute_id << std::endl;
 }
 
 void litho::LithoExporter::RasterizeBlock(Block& block, FILE* file)

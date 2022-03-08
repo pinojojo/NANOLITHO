@@ -27,7 +27,7 @@ public:
 	~InfillRenderer();
 
 	void Init(litho::LithoSetting setting);
-
+	
 	GLuint Raster(float left, float right, float bottom, float top, int rows, int cols);
 
 private:

@@ -18,6 +18,7 @@ void InfillRenderer::Init(litho::LithoSetting setting)
 	CreateShader();
 }
 
+
 GLuint InfillRenderer::Raster(float left, float right, float bottom, float top, int rows, int cols)
 {
 	left_ = left;

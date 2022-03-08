@@ -1,0 +1,13 @@
+{
+    "stl_path": "../bin/stl/micro-lens.stl",
+    "xml_path": "../bin/output/xml/",
+    "attention-units-are-messy": " pixel_size: nanometer,size:micrometer,layer_height:micrometer,shell_thickness:pixels,infill_spacing:pixels",
+    "pixel_size":1000,
+    "size": 1000,
+    "along_x": true,
+    "layer_height": 1,
+    "shell_thickness": 10,
+    "infill_spacing":12,
+    "infill_rate":1.0,
+    "x_limit":1000
+ }
