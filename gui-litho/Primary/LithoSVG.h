@@ -72,6 +72,7 @@ namespace litho
 
 		glm::vec2 GetUpperRight();
 		glm::vec2 GetBottomLeft();
+		void GetMinMaxZ(float& min_z, float& max_z);
 
 		glm::vec2 GetCenter();
 

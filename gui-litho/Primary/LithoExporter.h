@@ -89,8 +89,11 @@ namespace litho
 		void SaveTexture2PNG(GLuint tex, std::string png_path);
 		
 		glm::vec3 GetExternalPosition(Strip& strip);
+
+		void GetSingleStripMaxSizeMicron(glm::vec2& single_max_size);
+		void GetTotalBoundingBoxNono(glm::vec2& upper_left, glm::vec3& box_size);
 		
-		
+		void GenerateHeadXML();
 		
 		LithoRasterizer rasterizer_;
 		

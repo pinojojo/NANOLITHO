@@ -129,6 +129,92 @@ glm::vec3 litho::LithoExporter::GetExternalPosition(Strip& strip)
 	return ret;
 }
 
+void litho::LithoExporter::GetSingleStripMaxSizeMicron(glm::vec2& single_max_size)
+{
+	glm::vec2 largest = glm::vec2(0);
+	
+	for (auto& layer:adaptive_layers_)
+	{
+		for (auto& strip : layer.strips)
+		{
+			if (strip.width>largest.x)
+			{
+				largest.x = strip.width;
+			}
+
+			if (strip.height > largest.y)
+			{
+				largest.y = strip.height;
+			}
+		}
+	}
+
+	largest = largest * setting_.pixel_size_external;
+}
+
+void litho::LithoExporter::GetTotalBoundingBoxNono(glm::vec2& upper_left, glm::vec3& box_size)
+{
+	glm::vec2 bottom_left = svg_.GetBottomLeft();
+	glm::vec2 upper_right = svg_.GetUpperRight();
+	glm::vec2 center = svg_.GetCenter();
+
+	bottom_left -= center;
+	upper_right -= center;
+	
+	glm::vec2 _upper_left;
+	_upper_left.x = bottom_left.x;
+	_upper_left.y = upper_right.y;
+
+	glm::vec3 _box_size;
+	_box_size.x = upper_right.x - bottom_left.x;
+	_box_size.y = upper_right.y - bottom_left.y;
+	float z_max, z_min;
+	svg_.GetMinMaxZ(z_min, z_max);
+	_box_size.z = z_max - z_min;
+
+	// convert to nanometer
+	
+
+
+}
+
+void litho::LithoExporter::GenerateHeadXML()
+{
+	std::string save_path = setting_.xml_path + "head.xml";
+
+	FILE* xml_file = NULL;
+
+	xml_file = fopen(save_path.c_str(), "w");
+	if (!xml_file)
+	{
+		std::cout << "ERROR: xml path creating failed ! " << std::endl;
+	}
+	else
+	{
+		fprintf(xml_file, "<Head>\n");
+
+		std::string view_string;
+		
+		view_string += "View ";
+		view_string += "MaxSingleWidth = \"" + std::to_string(int(1e-3*(setting_.strip_width*setting_.pixel_size_external))) + "\" ";
+		view_string += "MaxSingleHeight = \"" + std::to_string(int(1e-3*(setting_.strip_width*setting_.pixel_size_external))) + "\" ";
+
+
+
+		std::string grave_string = "<Grave ExcitationPower=\"50\" SuppressedPower=\"50\" WriteSpeed=\"10000\" WriteMode=\"GalvoMode\" WriteChannel=\"[0, 0]\" BiDirection=\"False\" SlicingSize=\"500\" PixelSize=\"" + std::to_string((int)setting_.pixel_size_external) + "\" JointSize=\"0\" IsGray=\"False\" />";
+
+		fprintf(xml_file, grave_string.c_str());
+
+
+		fprintf(xml_file, "</Head>");
+
+		fclose(xml_file);
+
+	}
+
+
+}
+
 litho::LithoExporter::LithoExporter(LithoSetting& setting)
 {
 	// setting

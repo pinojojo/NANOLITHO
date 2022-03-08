@@ -126,6 +126,30 @@ glm::vec2 litho::LithoSVG::GetBottomLeft()
 	return ret;
 }
 
+void litho::LithoSVG::GetMinMaxZ(float& min_z, float& max_z)
+{
+	float min = 9999999;
+	float max = -9999999;
+	
+	for (auto& layer : data_)
+	{
+		if (layer.z_value>max)
+		{
+			max = layer.z_value;
+		}
+
+		if (layer.z_value<min)
+		{
+			min = layer.z_value;
+		}
+
+	}
+
+	min_z = min;
+	max_z = max;
+
+}
+
 glm::vec2 litho::LithoSVG::GetCenter()
 {
 	glm::vec2 corner_first = GetUpperRight();
